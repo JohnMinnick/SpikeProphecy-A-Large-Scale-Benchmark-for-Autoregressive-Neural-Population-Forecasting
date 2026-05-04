@@ -14,7 +14,7 @@ Usage (NRP):
         --model-type teacher \
         --model-config configs/teacher/nrp_teacher_mamba.yaml \
         --checkpoint-slug 2026-03-26_baseline-mamba-v12 \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/steinmetz-session-cache \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/steinmetz-session-cache \
         --upload-slug pop-metrics-mamba-steinmetz
 
     # Student SNN (2L standalone)
@@ -22,7 +22,7 @@ Usage (NRP):
         --model-type student \
         --model-config configs/student/standalone_snn.yaml \
         --checkpoint-slug snn-standalone-v12b \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/steinmetz-session-cache \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/steinmetz-session-cache \
         --upload-slug pop-metrics-snn-2l-steinmetz
 
     # LSTM teacher
@@ -30,7 +30,7 @@ Usage (NRP):
         --model-type teacher \
         --model-config configs/archive/teacher/nrp_teacher.yaml \
         --checkpoint-slug 2026-02-21_lstm-lr5e4 \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/steinmetz-session-cache \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/steinmetz-session-cache \
         --upload-slug pop-metrics-lstm-steinmetz
 """
 
@@ -74,7 +74,7 @@ logger = logging.getLogger("nrp_pop_metrics_general")
 # S3 Configuration
 # ---------------------------------------------------------------------------
 S3_BUCKET = "braingeneersdev"
-S3_OUTPUT_PREFIX = "jrm/spike-prophecy/outputs"
+S3_OUTPUT_PREFIX = "<anon>/spike-prophecy/outputs"
 
 
 def get_s3():

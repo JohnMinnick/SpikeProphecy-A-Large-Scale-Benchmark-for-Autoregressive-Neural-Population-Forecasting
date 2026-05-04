@@ -2,7 +2,7 @@
 across all 39 Steinmetz sessions.
 
 Output (uploaded to S3):
-  jrm/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
+  <anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
   containing:
     fano_per_session  : list of arrays, one per session, shape (M_i,)
     pn_r[arch]        : list of arrays, one per session, shape (M_i,)
@@ -37,13 +37,13 @@ def _bootstrap_models():
     target_dir = Path("/workspace/src/models")
     target_dir.mkdir(parents=True, exist_ok=True)
     files = [
-        ("common.py", "jrm/spike-prophecy/scripts/_bootstrap/common.py"),
+        ("common.py", "<anon>/spike-prophecy/scripts/_bootstrap/common.py"),
         ("hgrn2_baseline.py",
-         "jrm/spike-prophecy/scripts/_bootstrap/hgrn2_baseline.py"),
+         "<anon>/spike-prophecy/scripts/_bootstrap/hgrn2_baseline.py"),
         ("gated_delta_baseline.py",
-         "jrm/spike-prophecy/scripts/_bootstrap/gated_delta_baseline.py"),
+         "<anon>/spike-prophecy/scripts/_bootstrap/gated_delta_baseline.py"),
         ("transformer_baseline.py",
-         "jrm/spike-prophecy/scripts/_bootstrap/transformer_baseline.py"),
+         "<anon>/spike-prophecy/scripts/_bootstrap/transformer_baseline.py"),
     ]
     for fname, key in files:
         try:
@@ -76,7 +76,7 @@ _check_cuda()
 
 
 BUCKET = "braingeneersdev"
-S3_OUT = "jrm/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz"
+S3_OUT = "<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz"
 LOCAL = Path("/data/work")
 LOCAL.mkdir(parents=True, exist_ok=True)
 HISTORY_BINS = 10
@@ -120,7 +120,7 @@ def fetch_config(local_path, name_for_s3):
     in-image path doesn't exist."""
     if Path(local_path).exists():
         return str(local_path)
-    s3_key = f"jrm/spike-prophecy/scripts/{name_for_s3}"
+    s3_key = f"<anon>/spike-prophecy/scripts/{name_for_s3}"
     dest = LOCAL / name_for_s3
     print(f"  config not in image, fetching {s3_key}")
     s3.download_file(BUCKET, s3_key, str(dest))
@@ -204,7 +204,7 @@ def _load_session(sess, idx):
     n_actual = sess.get("num_units")
     n_bins = sess.get("num_bins")
     npy_name = sess.get("npy", f"session_{idx:03d}.npy")
-    fetch(f"jrm/spike-prophecy/inputs/steinmetz-session-cache/{npy_name}",
+    fetch(f"<anon>/spike-prophecy/inputs/steinmetz-session-cache/{npy_name}",
           LOCAL / npy_name)
     raw = np.load(str(LOCAL / npy_name)).astype(np.float32)
     if raw.shape[0] == n_actual and raw.shape[1] == n_bins:
@@ -234,7 +234,7 @@ def _load_session(sess, idx):
 
 def main():
     # Fetch session metadata
-    fetch("jrm/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
+    fetch("<anon>/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
           LOCAL / "metadata.json")
     md = json.load(open(LOCAL / "metadata.json"))
     sessions = md["sessions"]
@@ -267,7 +267,7 @@ def main():
 
         ckpt_dest = LOCAL / f"ckpt_{arch_key}.pt"
         try:
-            fetch(f"jrm/spike-prophecy/outputs/{slug}/best_model.pt",
+            fetch(f"<anon>/spike-prophecy/outputs/{slug}/best_model.pt",
                   ckpt_dest)
         except Exception as e:
             print(f"  fetch failed: {e}")

@@ -73,14 +73,14 @@ def main():
     LOCAL_CACHE.mkdir(parents=True, exist_ok=True)
 
     # Load session metadata + npy
-    fetch("jrm/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
+    fetch("<anon>/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
           LOCAL_CACHE / "metadata.json")
     md = json.load(open(LOCAL_CACHE / "metadata.json"))
     sess = md["sessions"][SESSION_IDX]
     n_actual = sess.get("num_units")
     n_bins = sess.get("num_bins")
     npy_name = sess.get("npy", f"session_{SESSION_IDX:03d}.npy")
-    fetch(f"jrm/spike-prophecy/inputs/steinmetz-session-cache/{npy_name}",
+    fetch(f"<anon>/spike-prophecy/inputs/steinmetz-session-cache/{npy_name}",
           LOCAL_CACHE / npy_name)
     raw = np.load(str(LOCAL_CACHE / npy_name)).astype(np.float32)
     if raw.shape[0] == n_actual and raw.shape[1] == n_bins:
@@ -96,7 +96,7 @@ def main():
 
     # SNN checkpoint + config
     snn_yaml = ROOT / "configs" / "student" / "standalone_snn_3l.yaml"
-    snn_ckpt_key = ("jrm/spike-prophecy/outputs/"
+    snn_ckpt_key = ("<anon>/spike-prophecy/outputs/"
                     "2026-04-22_snn-standalone-3l-steinmetz/best_model.pt")
     fetch(snn_ckpt_key, LOCAL_CACHE / "ckpt_snn.pt")
     config = yaml.safe_load(open(snn_yaml))

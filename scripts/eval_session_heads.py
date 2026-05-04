@@ -271,7 +271,7 @@ def main():
         try:
             from s3_utils import list_files, download_single_file
             s3_prefix = os.environ.get(
-                "S3_DATA_PREFIX", "jrm/spike-prophecy/inputs",
+                "S3_DATA_PREFIX", "<anon>/spike-prophecy/inputs",
             )
             all_keys = list_files(s3_prefix)
             nwb_keys = [k for k in all_keys if k.endswith(".nwb")]
@@ -310,7 +310,7 @@ def main():
     elif args.checkpoint_slug:
         # Download from S3
         from s3_utils import download_single_file
-        s3_key = f"jrm/spike-prophecy/outputs/{args.checkpoint_slug}/{args.checkpoint_file}"
+        s3_key = f"<anon>/spike-prophecy/outputs/{args.checkpoint_slug}/{args.checkpoint_file}"
         local_dir = PROJECT_ROOT / "checkpoints"
         local_dir.mkdir(parents=True, exist_ok=True)
         checkpoint_path = str(local_dir / f"{args.checkpoint_slug}_{args.checkpoint_file}")

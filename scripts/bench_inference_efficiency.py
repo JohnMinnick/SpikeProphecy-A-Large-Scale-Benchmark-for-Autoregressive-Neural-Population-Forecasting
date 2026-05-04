@@ -17,7 +17,7 @@ Architectures:
     LSTM (H=256, L=3, dropout=0.2)
     SNN 1L (h=256, RSynaptic, beta=0.9)
 
-Uploads results to s3://braingeneersdev/jrm/spike-prophecy/outputs/
+Uploads results to s3://braingeneersdev/<anon>/spike-prophecy/outputs/
     efficiency-benchmark/metrics.json
 """
 
@@ -43,7 +43,7 @@ WARMUP = 20
 TIMED = 50
 
 BUCKET = "braingeneersdev"
-S3_OUTPUT_KEY = "jrm/spike-prophecy/outputs/efficiency-benchmark/metrics.json"
+S3_OUTPUT_KEY = "<anon>/spike-prophecy/outputs/efficiency-benchmark/metrics.json"
 
 s3 = boto3.client(
     "s3",

@@ -7,7 +7,7 @@ Uses the verified-correct pipeline from the local run:
   - Trim outputs to actual n_neurons + first 660 timesteps for the figure
 
 Output:
-  s3://braingeneersdev/jrm/spike-prophecy/outputs/multi-arch-mamba-snn-session4/predictions.npz
+  s3://braingeneersdev/<anon>/spike-prophecy/outputs/multi-arch-mamba-snn-session4/predictions.npz
 """
 
 import os
@@ -24,7 +24,7 @@ import yaml
 sys.path.insert(0, "/workspace")
 
 BUCKET = "braingeneersdev"
-S3_OUT = ("jrm/spike-prophecy/outputs/"
+S3_OUT = ("<anon>/spike-prophecy/outputs/"
           "multi-arch-mamba-snn-session4/predictions.npz")
 LOCAL = Path("/data/work")
 LOCAL.mkdir(parents=True, exist_ok=True)
@@ -93,14 +93,14 @@ def run_inference(model, X, n_actual, batch=128, device="cuda"):
 
 def main():
     # Load session
-    fetch("jrm/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
+    fetch("<anon>/spike-prophecy/inputs/steinmetz-session-cache/metadata.json",
           LOCAL / "metadata.json")
     md = json.load(open(LOCAL / "metadata.json"))
     sess = md["sessions"][SESSION_IDX]
     n_actual = sess.get("num_units")
     n_bins = sess.get("num_bins")
     npy = sess.get("npy", f"session_{SESSION_IDX:03d}.npy")
-    fetch(f"jrm/spike-prophecy/inputs/steinmetz-session-cache/{npy}",
+    fetch(f"<anon>/spike-prophecy/inputs/steinmetz-session-cache/{npy}",
           LOCAL / npy)
     raw = np.load(str(LOCAL / npy)).astype(np.float32)
     if raw.shape[0] == n_actual and raw.shape[1] == n_bins:
@@ -121,7 +121,7 @@ def main():
     print("\n--- Mamba ---")
     from src.models.common import create_teacher_model
     mamba_yaml = "/workspace/configs/teacher/nrp_teacher_mamba.yaml"
-    mamba_ckpt_key = ("jrm/spike-prophecy/outputs/"
+    mamba_ckpt_key = ("<anon>/spike-prophecy/outputs/"
                       "2026-03-26_baseline-mamba-v12/best_model.pt")
     fetch(mamba_ckpt_key, LOCAL / "ckpt_mamba.pt")
     config = yaml.safe_load(open(mamba_yaml))
@@ -150,11 +150,11 @@ def main():
     print("\n--- SNN (3L standalone) ---")
     from src.models.student import StudentSNN
     snn_yaml = "/workspace/configs/student/standalone_snn_3l.yaml"
-    snn_ckpt_key = ("jrm/spike-prophecy/outputs/"
+    snn_ckpt_key = ("<anon>/spike-prophecy/outputs/"
                     "2026-04-22_snn-standalone-3l-steinmetz/best_model.pt")
     if not Path(snn_yaml).exists():
         # Fall back to S3 if not in image
-        fetch("jrm/spike-prophecy/scripts/standalone_snn_3l.yaml",
+        fetch("<anon>/spike-prophecy/scripts/standalone_snn_3l.yaml",
               LOCAL / "standalone_snn_3l.yaml")
         snn_yaml = str(LOCAL / "standalone_snn_3l.yaml")
     fetch(snn_ckpt_key, LOCAL / "ckpt_snn.pt")

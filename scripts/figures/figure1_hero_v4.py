@@ -67,7 +67,7 @@ def _try_load_multiarch():
         import boto3
         s3 = boto3.client("s3", endpoint_url="https://s3-west.nrp-nautilus.io")
         local.parent.mkdir(parents=True, exist_ok=True)
-        key = ("jrm/spike-prophecy/outputs/"
+        key = ("<anon>/spike-prophecy/outputs/"
                "multi-arch-inference-session4/predictions.npz")
         s3.download_file("braingeneersdev", key, str(local))
         return np.load(str(local))

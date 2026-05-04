@@ -48,7 +48,7 @@ preprocessing code that derives them.
 
 | Dataset | Size | Source | License |
 |---|---|---|---|
-| Steinmetz 2019 | 39 sessions, 27,212 neurons | [Figshare DOI](https://doi.org/10.6084/m9.figshare.9598406.v2) | CC-BY-4.0 |
+| Steinmetz 2019 | 39 sessions, 27,212 neurons | [Figshare DOI](https://doi.org/10.6084/m9.figshare.9598406.v2) (raw) / [HuggingFace](https://huggingface.co/datasets/mysteriousauthor/spikeprophecy-steinmetz) (our processed tensors) | CC-BY-4.0 |
 | IBL Repeated Site | 66 sessions, ~62,500 neurons | [IBL ONE API](https://www.internationalbrainlab.com/data) | CC-BY-4.0 |
 
 `scripts/run_ibl_cache.py` and `scripts/build_combined_cache.py`

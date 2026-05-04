@@ -3,7 +3,7 @@
 # Combined Steinmetz (39) + IBL Repeated Site (66) = 105 sessions.
 #
 # Uses pre-cached .npy session arrays from S3.
-# S3 prefix: jrm/spike-prophecy/inputs/combined-steinmetz-ibl/
+# S3 prefix: <anon>/spike-prophecy/inputs/combined-steinmetz-ibl/
 # =============================================================================
 
 # --- Data source ---

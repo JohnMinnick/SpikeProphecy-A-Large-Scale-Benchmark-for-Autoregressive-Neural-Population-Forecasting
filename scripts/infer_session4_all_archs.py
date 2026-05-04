@@ -3,7 +3,7 @@
 Writes a single NPZ to S3 containing GT + 7 architecture rate predictions.
 Designed to feed Figure 1's multi-arch hero.
 
-Output: jrm/spike-prophecy/outputs/multi-arch-inference-session4/predictions.npz
+Output: <anon>/spike-prophecy/outputs/multi-arch-inference-session4/predictions.npz
 """
 
 import os
@@ -16,7 +16,7 @@ import numpy as np
 import torch
 
 BUCKET = "braingeneersdev"
-S3_OUT = "jrm/spike-prophecy/outputs/multi-arch-inference-session4/predictions.npz"
+S3_OUT = "<anon>/spike-prophecy/outputs/multi-arch-inference-session4/predictions.npz"
 LOCAL_CACHE = Path("/data/steinmetz_cache")
 SESSION_IDX = 4
 HISTORY_BINS = 10
@@ -32,7 +32,7 @@ ARCHS = [
 ]
 # SNN is a student, different code path — pull from existing cached array
 SNN_CACHE_KEY = (
-    "jrm/spike-prophecy/outputs/full-inference-arrays/session_004.npz"
+    "<anon>/spike-prophecy/outputs/full-inference-arrays/session_004.npz"
 )
 
 s3 = boto3.client(
@@ -46,7 +46,7 @@ s3 = boto3.client(
 
 def download_session_cache():
     LOCAL_CACHE.mkdir(parents=True, exist_ok=True)
-    prefix = "jrm/spike-prophecy/inputs/steinmetz-session-cache/"
+    prefix = "<anon>/spike-prophecy/inputs/steinmetz-session-cache/"
     resp = s3.list_objects_v2(Bucket=BUCKET, Prefix=prefix, MaxKeys=500)
     for obj in resp.get("Contents", []):
         key = obj["Key"]
@@ -113,7 +113,7 @@ def main():
 
     for arch_key, slug, name in ARCHS:
         print(f"\n--- {name} ({arch_key}) ---")
-        ckpt_key = f"jrm/spike-prophecy/outputs/{slug}/best_model.pt"
+        ckpt_key = f"<anon>/spike-prophecy/outputs/{slug}/best_model.pt"
         ckpt_path = LOCAL_CACHE / f"ckpt_{arch_key}.pt"
         if not ckpt_path.exists():
             print(f"  downloading {ckpt_key}")

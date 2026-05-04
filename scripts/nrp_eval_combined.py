@@ -62,15 +62,15 @@ def download_combined_cache(data_config: dict) -> Path:
         # IBL or combined data: download pre-cached session arrays
         ibl_tag = data_config.get("ibl", {}).get("tag", "repeated_site")
         tag_to_prefix = {
-            "repeated_site": "jrm/spike-prophecy/inputs/ibl-repeated-site",
-            "combined": "jrm/spike-prophecy/inputs/combined-steinmetz-ibl",
+            "repeated_site": "<anon>/spike-prophecy/inputs/ibl-repeated-site",
+            "combined": "<anon>/spike-prophecy/inputs/combined-steinmetz-ibl",
         }
         tag_to_cache = {
             "repeated_site": "ibl_repeated_site_cache",
             "combined": "combined_steinmetz_ibl_cache",
         }
         default_prefix = tag_to_prefix.get(
-            ibl_tag, f"jrm/spike-prophecy/inputs/{ibl_tag}"
+            ibl_tag, f"<anon>/spike-prophecy/inputs/{ibl_tag}"
         )
         default_cache = tag_to_cache.get(ibl_tag, f"{ibl_tag}_cache")
 

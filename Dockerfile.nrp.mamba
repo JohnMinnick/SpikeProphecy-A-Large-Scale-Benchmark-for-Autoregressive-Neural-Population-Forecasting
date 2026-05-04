@@ -9,10 +9,10 @@
 #
 # Build (from repo root):
 #   docker buildx build --platform=linux/amd64 -f Dockerfile.nrp.mamba \
-#       -t hitpunch/spike-prophecy:v4-mamba .
+#       -t <registry>/spike-prophecy:v4-mamba .
 #
 # Push:
-#   docker push hitpunch/spike-prophecy:v4-mamba
+#   docker push <registry>/spike-prophecy:v4-mamba
 # =============================================================================
 
 # Use devel image — provides nvcc for compiling mamba-ssm CUDA kernels

@@ -45,23 +45,23 @@ RUNS = [
     # Distilled models
     {"name": "Steinmetz Distill v6", "key": "steinmetz",
      "s3_ckpt": "2026-04-06_masked-distill-steinmetz-v6",
-     "s3_cache": "jrm/spike-prophecy/inputs/steinmetz-session-cache",
+     "s3_cache": "<anon>/spike-prophecy/inputs/steinmetz-session-cache",
      "cache_local": "/data/steinmetz_cache",
      "m_max": 1240, "nl": 3},
     {"name": "IBL Distill v6", "key": "ibl",
      "s3_ckpt": "2026-04-06_masked-distill-ibl-v6",
-     "s3_cache": "jrm/spike-prophecy/inputs/ibl-repeated-site",
+     "s3_cache": "<anon>/spike-prophecy/inputs/ibl-repeated-site",
      "cache_local": "/data/ibl_cache",
      "m_max": 1998, "nl": 3},
     {"name": "Combined Distill v7", "key": "combined",
      "s3_ckpt": "2026-04-07_masked-distill-combined-v7",
-     "s3_cache": "jrm/spike-prophecy/inputs/combined-steinmetz-ibl",
+     "s3_cache": "<anon>/spike-prophecy/inputs/combined-steinmetz-ibl",
      "cache_local": "/data/combined_cache",
      "m_max": 1998, "nl": 3},
     # Standalone SNN (no distillation)
     {"name": "Standalone SNN v12b", "key": "steinmetz",
      "s3_ckpt": "snn-standalone-v12b",
-     "s3_cache": "jrm/spike-prophecy/inputs/steinmetz-session-cache",
+     "s3_cache": "<anon>/spike-prophecy/inputs/steinmetz-session-cache",
      "cache_local": "/data/steinmetz_cache",
      "m_max": 1240, "nl": 2},
 ]
@@ -116,7 +116,7 @@ for run in RUNS:
     if not os.path.exists(ckpt_path):
         print(f"  Downloading checkpoint from {run['s3_ckpt']}...")
         s3.download_file("braingeneersdev",
-            f"jrm/spike-prophecy/outputs/{run['s3_ckpt']}/best_model.pt",
+            f"<anon>/spike-prophecy/outputs/{run['s3_ckpt']}/best_model.pt",
             ckpt_path)
 
     # Download session cache from S3
@@ -188,6 +188,6 @@ for r in results:
 # Upload results to S3
 out = json.dumps(results, indent=2)
 s3.put_object(Bucket="braingeneersdev",
-    Key="jrm/spike-prophecy/outputs/eval-distill-r-methods/results.json",
+    Key="<anon>/spike-prophecy/outputs/eval-distill-r-methods/results.json",
     Body=out.encode())
 print(f"\nUploaded results to S3: eval-distill-r-methods/results.json")

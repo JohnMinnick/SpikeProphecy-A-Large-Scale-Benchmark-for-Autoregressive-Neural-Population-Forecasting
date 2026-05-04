@@ -5,8 +5,8 @@ Usage:
   python scripts/figures/_update_data_from_nrp.py
 
 Reads:
-  s3://braingeneersdev/jrm/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
-  s3://braingeneersdev/jrm/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json
+  s3://braingeneersdev/<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
+  s3://braingeneersdev/<anon>/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json
 
 Writes (printed to stdout for manual paste-in):
   - FANO_DATA dict with all 7 archs
@@ -24,8 +24,8 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / "data" / "figure_cache"
 CACHE.mkdir(parents=True, exist_ok=True)
 
-S3_FANO = "jrm/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz"
-S3_AR = "jrm/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json"
+S3_FANO = "<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz"
+S3_AR = "<anon>/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json"
 
 s3 = boto3.client(
     "s3",

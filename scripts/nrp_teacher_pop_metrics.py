@@ -15,21 +15,21 @@ Usage (NRP):
     python scripts/nrp_teacher_pop_metrics.py \
         --teacher-s3-slug 2026-04-01_scale-combined-105 \
         --teacher-config configs/teacher/nrp_teacher_mamba.yaml \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/combined-steinmetz-ibl \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/combined-steinmetz-ibl \
         --upload-slug teacher-pop-metrics-combined
 
     # IBL (66 sessions)
     python scripts/nrp_teacher_pop_metrics.py \
         --teacher-s3-slug 2026-04-01_scale-ibl-only \
         --teacher-config configs/teacher/nrp_teacher_mamba.yaml \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/ibl-repeated-site \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/ibl-repeated-site \
         --upload-slug teacher-pop-metrics-ibl
 
     # Steinmetz (39 sessions) — requires NWB download first
     python scripts/nrp_teacher_pop_metrics.py \
         --teacher-s3-slug 2026-03-26_baseline-mamba-v12 \
         --teacher-config configs/teacher/nrp_teacher_mamba.yaml \
-        --s3-cache-prefix jrm/spike-prophecy/inputs/steinmetz \
+        --s3-cache-prefix <anon>/spike-prophecy/inputs/steinmetz \
         --upload-slug teacher-pop-metrics-steinmetz
 """
 
@@ -74,7 +74,7 @@ logger = logging.getLogger("nrp_teacher_pop_metrics")
 # S3 Configuration
 # ---------------------------------------------------------------------------
 S3_BUCKET = "braingeneersdev"
-S3_OUTPUT_PREFIX = "jrm/spike-prophecy/outputs"
+S3_OUTPUT_PREFIX = "<anon>/spike-prophecy/outputs"
 
 
 def get_s3():
@@ -102,7 +102,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--s3-cache-prefix", type=str, required=True,
         help="S3 prefix for pre-cached session .npy files "
-             "(e.g., jrm/spike-prophecy/inputs/combined-steinmetz-ibl).",
+             "(e.g., <anon>/spike-prophecy/inputs/combined-steinmetz-ibl).",
     )
     parser.add_argument(
         "--upload-slug", type=str, required=True,

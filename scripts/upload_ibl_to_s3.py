@@ -4,8 +4,8 @@ Upload IBL cached session arrays to braingeneersdev S3.
 Uploads the preprocessed .npy files and metadata.json from the local
 IBL cache to S3, organized alongside the Steinmetz inputs:
 
-    s3://braingeneersdev/jrm/spike-prophecy/inputs/steinmetz/  (existing NWBs)
-    s3://braingeneersdev/jrm/spike-prophecy/inputs/ibl-repeated-site/
+    s3://braingeneersdev/<anon>/spike-prophecy/inputs/steinmetz/  (existing NWBs)
+    s3://braingeneersdev/<anon>/spike-prophecy/inputs/ibl-repeated-site/
         session_000.npy
         session_001.npy
         ...
@@ -34,9 +34,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # S3 prefix structure:
-#   jrm/spike-prophecy/inputs/steinmetz/  ← existing NWB files
-#   jrm/spike-prophecy/inputs/ibl-repeated-site/  ← new IBL cache
-S3_PREFIX = "jrm/spike-prophecy/inputs/ibl-repeated-site"
+#   <anon>/spike-prophecy/inputs/steinmetz/  ← existing NWB files
+#   <anon>/spike-prophecy/inputs/ibl-repeated-site/  ← new IBL cache
+S3_PREFIX = "<anon>/spike-prophecy/inputs/ibl-repeated-site"
 
 
 def parse_args() -> argparse.Namespace:

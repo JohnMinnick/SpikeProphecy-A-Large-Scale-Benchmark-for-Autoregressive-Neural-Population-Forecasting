@@ -6,7 +6,7 @@
 \documentclass{article}
 
 % --- E&D Track, double-blind submission ---
-\usepackage[eandd, preprint]{neurips_2026}
+\usepackage[eandd]{neurips_2026}
 
 % --- Packages ---
 \usepackage[utf8]{inputenc}   % allow utf-8 input
@@ -30,27 +30,10 @@
 \title{SpikeProphecy: A Large-Scale Benchmark for\\Autoregressive Neural Population Forecasting}
 
 % --- Authors ---
-% NOTE: NeurIPS Evaluations & Datasets Track is double-blind for review.
-% Restore "Anonymous Author(s)" before submission if required.
-\author{%
-  John R. Minnick \\
-  \And
-  Jinghui Geng \\
-  \And
-  Kamran Hussain \\
-  \And
-  Jesus Gonzalez-Ferrer \\
-  \And
-  Ash Robbins \\
-  \And
-  Mohammed A. Mostajo-Radji \\
-  \And
-  David Haussler \\
-  \And
-  Jason K. Eshraghian \\
-  \And
-  Mircea Teodorescu
-}
+% NeurIPS Evaluations & Datasets Track double-blind submission.
+% Real author block lives in the private working repo and will be
+% restored at acceptance.
+\author{Anonymous Author(s)}
 
 \begin{document}
 \maketitle
@@ -311,8 +294,10 @@ recorded neurons per session.  Visual discrimination task
 (${\sim}$2-hour recordings).  Single lab, single rig, controlled
 conditions.  Source data are publicly available on Figshare under
 CC-BY-4.0 (\url{https://doi.org/10.6084/m9.figshare.9598406.v2});
-we redistribute only our processed binned and split tensors and
-the code that derives them.
+our processed 50\,ms-binned tensors plus per-session metadata
+(split boundaries, brain-region labels) are released as a
+HuggingFace dataset
+(\url{https://huggingface.co/datasets/mysteriousauthor/spikeprophecy-steinmetz}).
 
 \paragraph{IBL Repeated Site (66~sessions).}
 Multi-lab international consortium, standardized probe trajectory
@@ -1144,13 +1129,17 @@ interpreted with that caveat (see \S\ref{sec:related}).
 
 \begin{itemize}[nosep, leftmargin=*]
   \item \textbf{Data:} Processed 50\,ms-binned spike-count matrices
-    (NPY + session metadata JSON), redistributed alongside our
-    preprocessing code.  Source recordings remain at their
-    original public homes: Steinmetz at Figshare
+    (NPY + session metadata JSON).  The Steinmetz processed tensors
+    are released as a HuggingFace dataset
+    (\url{https://huggingface.co/datasets/mysteriousauthor/spikeprophecy-steinmetz},
+    CC-BY-4.0); the IBL processed tensors are deterministic outputs
+    of our preprocessing pipeline applied to the public IBL ONE
+    API and will be released alongside the Mamba combined-105
+    teacher checkpoint at acceptance.  Source recordings remain at
+    their original public homes: Steinmetz at Figshare
     (\url{https://doi.org/10.6084/m9.figshare.9598406.v2}) and IBL
     at the IBL ONE API
-    (\url{https://www.internationalbrainlab.com/data}).  A
-    50\,MB processed sample is included for quick inspection.
+    (\url{https://www.internationalbrainlab.com/data}).
   \item \textbf{Evaluation toolkit:} \texttt{pip install spikeprophecy}
     provides standardized evaluation, metric decomposition, and
     JSON report generation.
@@ -1752,8 +1741,11 @@ need for Fano-stratified evaluation.
     subjects.  No personally identifiable information.
   \item \textbf{Distribution:} The original recordings remain at
     their respective public repositories under CC-BY-4.0; we
-    redistribute only the processed binned/split tensors plus
-    derivation code, also under CC-BY-4.0 (data) and MIT (code).
+    redistribute the processed Steinmetz binned/split tensors as
+    a HuggingFace dataset
+    (\url{https://huggingface.co/datasets/mysteriousauthor/spikeprophecy-steinmetz},
+    CC-BY-4.0) plus derivation code (MIT).  IBL processed tensors
+    will follow at acceptance.
   \item \textbf{Maintenance:} Annual updates; community contributions
     via pull requests; versioned releases with changelogs.
 \end{itemize}

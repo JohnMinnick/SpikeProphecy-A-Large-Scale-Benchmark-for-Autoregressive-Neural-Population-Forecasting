@@ -70,7 +70,7 @@ def download_checkpoint(slug: str, output_dir: Path) -> Path:
     sys.path.insert(0, str(nrp_dir))
     from s3_utils import download_checkpoint as s3_download_ckpt
 
-    s3_key = f"jrm/spike-prophecy/outputs/{slug}/best_model.pt"
+    s3_key = f"<anon>/spike-prophecy/outputs/{slug}/best_model.pt"
     local_path = output_dir / f"{slug}_best_model.pt"
     local_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -320,7 +320,7 @@ def upload_results(results: dict, slug: str, output_path: str):
         sys.path.insert(0, str(nrp_dir))
         from s3_utils import upload_files
 
-        s3_prefix = "jrm/spike-prophecy/outputs"
+        s3_prefix = "<anon>/spike-prophecy/outputs"
         upload_files(s3_prefix, slug, output_path)
         logger.info("Uploaded results to S3: %s/%s", s3_prefix, slug)
     except Exception as e:
@@ -379,15 +379,15 @@ def main():
         # -----------------------------------------------------------------
         ibl_tag = data_config.get("ibl", {}).get("tag", "repeated_site")
         tag_to_prefix = {
-            "repeated_site": "jrm/spike-prophecy/inputs/ibl-repeated-site",
-            "combined": "jrm/spike-prophecy/inputs/combined-steinmetz-ibl",
+            "repeated_site": "<anon>/spike-prophecy/inputs/ibl-repeated-site",
+            "combined": "<anon>/spike-prophecy/inputs/combined-steinmetz-ibl",
         }
         tag_to_cache = {
             "repeated_site": "ibl_repeated_site_cache",
             "combined": "combined_steinmetz_ibl_cache",
         }
         ibl_s3_prefix = tag_to_prefix.get(
-            ibl_tag, f"jrm/spike-prophecy/inputs/{ibl_tag}"
+            ibl_tag, f"<anon>/spike-prophecy/inputs/{ibl_tag}"
         )
         ibl_cache_name = tag_to_cache.get(ibl_tag, f"{ibl_tag}_cache")
         cache_dir = PROJECT_ROOT / "data" / "processed" / ibl_cache_name
@@ -427,7 +427,7 @@ def main():
         # -----------------------------------------------------------------
         logger.info("Downloading NWB files from S3...")
         s3_prefix = os.environ.get(
-            "S3_DATA_PREFIX", "jrm/spike-prophecy/inputs"
+            "S3_DATA_PREFIX", "<anon>/spike-prophecy/inputs"
         )
         data_dir = PROJECT_ROOT / "data" / "raw"
         data_dir.mkdir(parents=True, exist_ok=True)

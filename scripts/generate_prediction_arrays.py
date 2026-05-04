@@ -53,8 +53,8 @@ logger = logging.getLogger("generate_prediction_arrays")
 # S3 Configuration
 # ---------------------------------------------------------------------------
 S3_BUCKET = "braingeneersdev"
-S3_OUTPUT_PREFIX = "jrm/spike-prophecy/outputs"
-S3_CHECKPOINT_PREFIX = "jrm/spike-prophecy/outputs"
+S3_OUTPUT_PREFIX = "<anon>/spike-prophecy/outputs"
+S3_CHECKPOINT_PREFIX = "<anon>/spike-prophecy/outputs"
 
 
 def parse_args() -> argparse.Namespace:

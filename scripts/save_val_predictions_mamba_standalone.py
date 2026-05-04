@@ -29,9 +29,9 @@ from src.data.multi_session_loader import (
 
 B = "braingeneersdev"
 CHECKPOINT_SLUG = "2026-03-26_baseline-mamba-v12"
-CACHE_S3 = "jrm/spike-prophecy/inputs/steinmetz-session-cache"
+CACHE_S3 = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
 OUTPUT_PREFIX = (
-    "jrm/spike-prophecy/outputs/behavioral-predictions-steinmetz/mamba"
+    "<anon>/spike-prophecy/outputs/behavioral-predictions-steinmetz/mamba"
 )
 
 
@@ -48,7 +48,7 @@ def main():
     # Download checkpoint + config
     os.makedirs("/tmp/ckpt", exist_ok=True)
     for f in ["best_model.pt", "config.yaml"]:
-        key = f"jrm/spike-prophecy/outputs/{CHECKPOINT_SLUG}/{f}"
+        key = f"<anon>/spike-prophecy/outputs/{CHECKPOINT_SLUG}/{f}"
         local = f"/tmp/ckpt/{f}"
         s3.download_file(B, key, local)
         print(f"  downloaded {f}")

@@ -87,12 +87,25 @@ recompute from raw model outputs if the cache is absent.
 We do not redistribute the raw recordings. Both source datasets
 are publicly hosted under CC-BY-4.0:
 
-* Steinmetz 2019 -> https://doi.org/10.6084/m9.figshare.9598406.v2
-* IBL Repeated Site -> https://www.internationalbrainlab.com/data
+* Steinmetz 2019 raw -> https://doi.org/10.6084/m9.figshare.9598406.v2
+* IBL Repeated Site raw -> https://www.internationalbrainlab.com/data
 
 Our `scripts/run_ibl_cache.py` and `scripts/build_combined_cache.py`
 fetch the source data and produce the 50 ms-binned tensors used by
 everything downstream.
+
+For convenience, the **processed Steinmetz tensors** (50 ms bins,
+uint8, 39 session_NNN.npy files plus metadata.json with split
+boundaries and brain-region labels) are available as a HuggingFace
+dataset under the same CC-BY-4.0 license:
+
+```python
+from huggingface_hub import snapshot_download
+local = snapshot_download(repo_id="mysteriousauthor/spikeprophecy-steinmetz",
+                          repo_type="dataset")
+```
+
+IBL processed tensors will follow at acceptance.
 
 ## Anonymization note
 

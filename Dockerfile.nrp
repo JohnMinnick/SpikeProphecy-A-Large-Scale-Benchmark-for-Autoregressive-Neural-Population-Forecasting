@@ -5,10 +5,10 @@
 # Extends the NRP template base with SpikeProphecy-specific dependencies.
 #
 # Build (from repo root):
-#   docker buildx build --platform=linux/amd64 -f Dockerfile.nrp -t hitpunch/spike-prophecy:latest .
+#   docker buildx build --platform=linux/amd64 -f Dockerfile.nrp -t <registry>/spike-prophecy:latest .
 #
 # Push:
-#   docker push hitpunch/spike-prophecy:latest
+#   docker push <registry>/spike-prophecy:latest
 # =============================================================================
 
 # Use CUDA devel image (not runtime) — mamba-ssm/causal-conv1d need nvcc

@@ -42,8 +42,8 @@ ARCHS = [
     ("lstm",        "2026-04-15_baseline-lstm-v23",
                     "configs/archive/teacher/nrp_teacher.yaml",     "LSTM"),
 ]
-SNN_CACHE_KEY = "jrm/spike-prophecy/outputs/full-inference-arrays/session_004.npz"
-SESSION_CACHE_KEY_PREFIX = "jrm/spike-prophecy/inputs/steinmetz-session-cache/"
+SNN_CACHE_KEY = "<anon>/spike-prophecy/outputs/full-inference-arrays/session_004.npz"
+SESSION_CACHE_KEY_PREFIX = "<anon>/spike-prophecy/inputs/steinmetz-session-cache/"
 
 s3 = boto3.client(
     "s3", endpoint_url="https://s3-west.nrp-nautilus.io",
@@ -171,7 +171,7 @@ def main():
         print(f"\n--- {name} ({arch_key}) ---")
         ckpt_dest = LOCAL_CACHE / f"ckpt_{arch_key}.pt"
         try:
-            fetch(f"jrm/spike-prophecy/outputs/{slug}/best_model.pt", ckpt_dest)
+            fetch(f"<anon>/spike-prophecy/outputs/{slug}/best_model.pt", ckpt_dest)
         except Exception as e:
             print(f"  failed to fetch checkpoint: {e}")
             continue

@@ -31,7 +31,7 @@ from botocore.config import Config
 # ---------------------------------------------------------------------------
 S3_ENDPOINT = "https://s3-west.nrp-nautilus.io"
 BUCKET = "braingeneersdev"
-S3_PREFIX = "jrm/spike-prophecy/outputs"
+S3_PREFIX = "<anon>/spike-prophecy/outputs"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "s3_metrics"
 
@@ -79,7 +79,7 @@ def list_experiments(s3_client, filter_name=None):
             continue
         for obj in response["Contents"]:
             key = obj["Key"]
-            # Key format: jrm/spike-prophecy/outputs/<exp_name>/<file>
+            # Key format: <anon>/spike-prophecy/outputs/<exp_name>/<file>
             relative = key[len(S3_PREFIX) + 1:]  # strip prefix + /
             parts = relative.split("/", 1)
             if len(parts) < 2:

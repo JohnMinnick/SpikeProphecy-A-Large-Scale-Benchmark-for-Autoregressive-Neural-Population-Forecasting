@@ -8,7 +8,7 @@ canonical leakage-suite catch, not a fair linear baseline.
 This script tunes alpha on the val split via a coarse grid, picks the best
 per-session alpha, then reports the standard pop_metrics on val.
 
-Output: jrm/spike-prophecy/outputs/glm-pop-ridge-cv/metrics.json
+Output: <anon>/spike-prophecy/outputs/glm-pop-ridge-cv/metrics.json
 """
 
 import json
@@ -21,8 +21,8 @@ import numpy as np
 from sklearn.linear_model import Ridge
 
 BUCKET = "braingeneersdev"
-S3_CACHE_PREFIX = "jrm/spike-prophecy/inputs/steinmetz-session-cache"
-S3_OUTPUT_KEY = "jrm/spike-prophecy/outputs/glm-pop-ridge-cv/metrics.json"
+S3_CACHE_PREFIX = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
+S3_OUTPUT_KEY = "<anon>/spike-prophecy/outputs/glm-pop-ridge-cv/metrics.json"
 LOCAL_CACHE = Path("/data/steinmetz_cache")
 
 HISTORY_BINS = 10

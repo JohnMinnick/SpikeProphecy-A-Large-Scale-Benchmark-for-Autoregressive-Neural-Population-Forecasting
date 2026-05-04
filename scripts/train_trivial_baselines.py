@@ -20,8 +20,8 @@ import boto3
 import numpy as np
 
 BUCKET = "braingeneersdev"
-S3_CACHE_PREFIX = "jrm/spike-prophecy/inputs/steinmetz-session-cache"
-S3_OUTPUT_KEY = "jrm/spike-prophecy/outputs/glm-trivial-baselines/metrics.json"
+S3_CACHE_PREFIX = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
+S3_OUTPUT_KEY = "<anon>/spike-prophecy/outputs/glm-trivial-baselines/metrics.json"
 LOCAL_CACHE = Path("/data/steinmetz_cache")
 
 HISTORY_BINS = 10

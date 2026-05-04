@@ -138,7 +138,7 @@ def download_nwb_from_s3(dry_run: bool = False) -> None:
     Skips files that already exist locally. In dry-run mode, logs
     what would be downloaded without actually fetching files.
     """
-    s3_prefix = os.environ.get("S3_DATA_PREFIX", "jrm/spike-prophecy/inputs")
+    s3_prefix = os.environ.get("S3_DATA_PREFIX", "<anon>/spike-prophecy/inputs")
     input_files_str = os.environ.get("INPUT_FILES", "")
     data_dir = PROJECT_ROOT / "data" / "raw"
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -202,7 +202,7 @@ def download_checkpoint_from_s3(slug: str) -> Path:
         FileNotFoundError: If no checkpoint found on S3.
     """
     s3_prefix = os.environ.get(
-        "S3_UPLOAD_PREFIX", "jrm/spike-prophecy/outputs"
+        "S3_UPLOAD_PREFIX", "<anon>/spike-prophecy/outputs"
     )
     checkpoint_key = f"{s3_prefix}/{slug}/best_model.pt"
     local_path = PROJECT_ROOT / "checkpoints" / "resume_best_model.pt"
@@ -238,7 +238,7 @@ def upload_checkpoint_to_s3(checkpoint_path: Path, epoch: int) -> None:
         epoch: The epoch number when the checkpoint was saved.
     """
     s3_prefix = os.environ.get(
-        "S3_UPLOAD_PREFIX", "jrm/spike-prophecy/outputs"
+        "S3_UPLOAD_PREFIX", "<anon>/spike-prophecy/outputs"
     )
     # Get experiment dir name from the checkpoint path
     exp_name = checkpoint_path.parent.name
@@ -362,7 +362,7 @@ def upload_experiment_to_s3(exp_dir: Path, dry_run: bool = False) -> None:
         dry_run: If True, log what would be uploaded without uploading.
     """
     s3_prefix = os.environ.get(
-        "S3_UPLOAD_PREFIX", "jrm/spike-prophecy/outputs"
+        "S3_UPLOAD_PREFIX", "<anon>/spike-prophecy/outputs"
     )
 
     if dry_run:
@@ -404,7 +404,7 @@ def upload_experiment_metadata_to_s3(
         dry_run: If True, log what would be uploaded without uploading.
     """
     s3_prefix = os.environ.get(
-        "S3_UPLOAD_PREFIX", "jrm/spike-prophecy/outputs"
+        "S3_UPLOAD_PREFIX", "<anon>/spike-prophecy/outputs"
     )
     metadata_files = ["config.yaml", "RUN.md", "notes.md"]
 
@@ -444,7 +444,7 @@ def upload_metrics_to_s3(exp_dir: Path, epoch: int) -> None:
         epoch: The epoch number when the callback was triggered.
     """
     s3_prefix = os.environ.get(
-        "S3_UPLOAD_PREFIX", "jrm/spike-prophecy/outputs"
+        "S3_UPLOAD_PREFIX", "<anon>/spike-prophecy/outputs"
     )
     metrics_path = exp_dir / "metrics.json"
     if not metrics_path.exists():
@@ -504,15 +504,15 @@ def main() -> None:
         # Env vars override if explicitly set.
         ibl_tag = _data_peek.get("ibl", {}).get("tag", "repeated_site")
         tag_to_prefix = {
-            "repeated_site": "jrm/spike-prophecy/inputs/ibl-repeated-site",
-            "combined": "jrm/spike-prophecy/inputs/combined-steinmetz-ibl",
+            "repeated_site": "<anon>/spike-prophecy/inputs/ibl-repeated-site",
+            "combined": "<anon>/spike-prophecy/inputs/combined-steinmetz-ibl",
         }
         tag_to_cache = {
             "repeated_site": "ibl_repeated_site_cache",
             "combined": "combined_steinmetz_ibl_cache",
         }
         default_prefix = tag_to_prefix.get(
-            ibl_tag, f"jrm/spike-prophecy/inputs/{ibl_tag}"
+            ibl_tag, f"<anon>/spike-prophecy/inputs/{ibl_tag}"
         )
         default_cache = tag_to_cache.get(
             ibl_tag, f"{ibl_tag}_cache"
@@ -614,7 +614,7 @@ def main() -> None:
             logger.info(
                 "Downloading per_neuron_stats.json from S3 for ceiling weights..."
             )
-            s3_key = "jrm/spike-prophecy/assets/per_neuron_stats.json"
+            s3_key = "<anon>/spike-prophecy/assets/per_neuron_stats.json"
             nrp_dir = PROJECT_ROOT / "nrp"
             sys.path.insert(0, str(nrp_dir))
             from s3_utils import download_single_file

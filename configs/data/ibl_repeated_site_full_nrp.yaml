@@ -4,7 +4,7 @@
 #
 # Uses pre-cached .npy session arrays from S3 instead of ONE API.
 # Cache path: data/processed/ibl_repeated_site_cache/
-# S3 prefix: jrm/spike-prophecy/inputs/ibl-repeated-site/
+# S3 prefix: <anon>/spike-prophecy/inputs/ibl-repeated-site/
 # =============================================================================
 
 # --- Data source ---

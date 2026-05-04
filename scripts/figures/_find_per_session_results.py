@@ -19,7 +19,7 @@ SLUGS = [
 ]
 
 for name, slug in SLUGS:
-    prefix = f"jrm/spike-prophecy/outputs/{slug}/"
+    prefix = f"<anon>/spike-prophecy/outputs/{slug}/"
     r = s3.list_objects_v2(Bucket="braingeneersdev", Prefix=prefix, MaxKeys=50)
     print(f"\n=== {name} ({slug}) ===")
     items = r.get("Contents", [])

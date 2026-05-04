@@ -2,7 +2,7 @@
 
 After deploy_save_pred_combined105.ps1's NRP job uploads
 session_NNN.npz files to
-``s3://braingeneersdev/jrm/spike-prophecy/outputs/save-pred-combined105-mamba/predictions/``,
+``s3://braingeneersdev/<anon>/spike-prophecy/outputs/save-pred-combined105-mamba/predictions/``,
 this script pulls them locally to
 ``outputs/eval_local/behavioral_predictions/mamba_combined105/`` so
 the eval scripts can read them.
@@ -17,7 +17,7 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument(
         "--s3-prefix",
-        default="jrm/spike-prophecy/outputs/save-pred-combined105-mamba/predictions_full/",
+        default="<anon>/spike-prophecy/outputs/save-pred-combined105-mamba/predictions_full/",
     )
     p.add_argument(
         "--local-dir",

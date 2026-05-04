@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "spike-prophecy"
 version = "0.1.0"
-description = "Interference-robust spike forecasting via ANN-to-SNN distillation."
+description = "SpikeProphecy: a benchmark for autoregressive neural population forecasting."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "John R. Minnick"},
+    {name = "Anonymous (NeurIPS 2026 submission)"},
 ]
 requires-python = ">=3.10"
 dependencies = [

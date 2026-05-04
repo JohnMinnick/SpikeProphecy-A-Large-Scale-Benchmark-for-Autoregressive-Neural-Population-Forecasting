@@ -13,7 +13,7 @@ from pathlib import Path
 # Configuration
 # =============================================================================
 S3_BUCKET = "braingeneersdev"
-S3_PREFIX = "jrm/spike-prophecy/outputs"
+S3_PREFIX = "<anon>/spike-prophecy/outputs"
 
 # S3 slugs for each architecture's population metrics
 SLUGS = {

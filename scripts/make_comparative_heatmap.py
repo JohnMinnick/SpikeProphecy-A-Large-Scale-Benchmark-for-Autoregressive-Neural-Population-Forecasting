@@ -28,7 +28,7 @@ def download_checkpoint(slug):
             aws_secret_access_key=base64.b64decode("RFQ2T3Q4WXJtUmxRbmFjWmVCU1c3d3ZWMVJLdXRBUGpSTE1uRW9PVA==").decode('utf-8')
         )
         bucket = 'braingeneersdev'
-        key = f'jrm/spike-prophecy/outputs/{slug}/best_model.pt'
+        key = f'<anon>/spike-prophecy/outputs/{slug}/best_model.pt'
         s3.download_file(bucket, key, local_path)
     return local_path
 
