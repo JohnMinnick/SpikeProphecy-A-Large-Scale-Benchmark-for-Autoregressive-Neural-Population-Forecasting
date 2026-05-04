@@ -1,0 +1,67 @@
+# =============================================================================
+# configs/data/ibl_repeated_site_50ms_no_cov.yaml
+# IBL Brain-wide Map — Repeated Site subset.
+#
+# Matches Steinmetz config format for fair cross-dataset comparison.
+# Uses same binning (50ms), history (T=10), and split ratios.
+#
+# Data source: IBL ONE API (requires pip install ONE-api)
+# Reference: International Brain Laboratory, 2023
+# =============================================================================
+
+# --- Data source ---
+source:
+  type: "ibl"
+  # Session EIDs will be specified at runtime or via file_list
+  # Start with 3 sessions for pipeline validation, then scale to 91
+  file_list: null     # Override with specific EIDs if needed
+
+# --- IBL-specific settings ---
+ibl:
+  tag: "repeated_site"       # IBL data release tag
+  max_sessions: 3            # Start small for validation (scale to 91 later)
+  cache_dir: "data/raw/ibl"  # Local cache for ONE API downloads
+
+# --- Binning and windowing (matched to Steinmetz) ---
+bin_width_ms: 50          # 50 ms bins (same as Steinmetz)
+history_bins: 10          # T = 10 bins -> 500 ms history window
+forecast_horizon: 1       # H = 1 (one-step forecasting)
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Unit filtering (matched to Steinmetz) ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null
+  quality_labels: null        # IBL uses numeric metrics, not "good"/"mua" labels
+  brain_region: null
+  duration_limit_s: null
+
+# --- History features (disabled for baseline) ---
+history_features:
+  enabled: false
+
+# --- Covariates DISABLED (pure spike history, same as Steinmetz baseline) ---
+covariates:
+  enabled: false
+
+# --- Train/val/test splits (matched to Steinmetz) ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Batch size ---
+batch_size: 512
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+
+# --- Session loading mode ---
+loader_mode: "lazy"

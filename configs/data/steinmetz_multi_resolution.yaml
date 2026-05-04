@@ -1,0 +1,76 @@
+# =============================================================================
+# configs/data/steinmetz_multi_resolution.yaml
+# KOSMOS Tier 2G: Multi-resolution training configuration.
+#
+# Defines three temporal resolutions for co-training:
+#   - 25ms bins (fast transients, action potentials)
+#   - 50ms bins (standard, our primary resolution)
+#   - 100ms bins (slow dynamics, state transitions)
+#
+# The model shares its encoder across resolutions but uses
+# resolution-specific output heads. This lets it learn both
+# fast spiking patterns and slow rate modulation simultaneously.
+# =============================================================================
+
+# --- Data source ---
+source:
+  type: "nwb_multi"
+  glob: "data/raw/Steinmetz2019_*.nwb"
+
+# --- Multi-resolution binning ---
+# Each resolution creates its own set of dataloaders.
+# The trainer alternates batches from each resolution.
+resolutions:
+  - bin_width_ms: 25
+    history_bins: 20       # 20 × 25ms = 500ms history (same time window)
+    weight: 0.25           # Contribution to total loss
+  - bin_width_ms: 50
+    history_bins: 10       # 10 × 50ms = 500ms history (primary resolution)
+    weight: 0.50           # Primary resolution gets most weight
+  - bin_width_ms: 100
+    history_bins: 5        # 5 × 100ms = 500ms history
+    weight: 0.25           # Slow dynamics
+
+# --- Primary resolution (for compatibility) ---
+bin_width_ms: 50
+history_bins: 10
+forecast_horizon: 1
+
+# --- Reproducibility ---
+seed: 42
+
+# --- NWB loading ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null
+  quality_labels: ["good"]
+  brain_region: null
+  duration_limit_s: null
+
+# --- History features (disabled) ---
+history_features:
+  enabled: false
+
+# --- Covariates DISABLED ---
+covariates:
+  enabled: false
+
+# --- Splits ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Batch ---
+batch_size: 512
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+
+# --- Session loading ---
+loader_mode: "lazy"

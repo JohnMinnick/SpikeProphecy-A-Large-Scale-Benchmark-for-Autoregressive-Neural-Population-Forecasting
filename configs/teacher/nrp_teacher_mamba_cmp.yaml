@@ -1,0 +1,65 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_mamba_cmp.yaml
+# Mamba with Conway-Maxwell-Poisson (CMP) loss function.
+#
+# KOSMOS Tier 2E: Replace Poisson NLL with CMP to properly handle
+# both over-dispersed (super-Poisson) and under-dispersed (sub-Poisson)
+# neurons.  28% of neurons in Steinmetz have Fano factor < 1 where
+# the Poisson variance assumption is wrong.
+#
+# CMP adds a learnable per-neuron dispersion parameter nu:
+#   nu > 1 = sub-Poisson (under-dispersed, regular)
+#   nu < 1 = super-Poisson (over-dispersed, bursty)
+#   nu = 1 = standard Poisson
+#
+# The dispersion is initialized at nu=1 (Poisson) and learned jointly
+# with model weights.  Architecture is identical to nrp_teacher_mamba.yaml.
+#
+# Comparison target: Mamba + Poisson NLL, r=0.4991
+# =============================================================================
+
+# --- Model architecture (identical to baseline Mamba) ---
+model:
+  type: "mamba"
+  architecture: "mamba"
+  input_size: null
+  hidden_size: 256            # d_model — matches baseline
+  num_layers: 3               # Same depth
+  d_state: 16                 # SSM state dimension
+  d_conv: 4                   # Local convolution width
+  expand: 2                   # Inner dimension = expand × d_model
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 2
+  batch_size: 512
+  learning_rate: 0.0003       # Same as baseline
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss: CMP NLL with learnable per-neuron dispersion ---
+loss:
+  type: "cmp_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

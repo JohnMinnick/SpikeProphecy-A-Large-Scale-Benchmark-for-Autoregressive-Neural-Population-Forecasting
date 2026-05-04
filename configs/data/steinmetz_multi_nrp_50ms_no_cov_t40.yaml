@@ -1,0 +1,58 @@
+# =============================================================================
+# configs/data/steinmetz_multi_nrp_50ms_no_cov_t40.yaml
+# No covariates + T=40 (2s history) — pure intrinsic spike dynamics.
+#
+# Tests whether longer history alone captures the gains previously seen
+# with stimulus covariates. If T=40 no-cov ≈ T=40 temporal-cov, then
+# covariates are truly unnecessary and the model learns from spike
+# history alone.
+# =============================================================================
+
+# --- Data source ---
+source:
+  type: "nwb_multi"
+  glob: "data/raw/Steinmetz2019_*.nwb"
+
+# --- Binning and windowing ---
+bin_width_ms: 50          # 50 ms bins
+history_bins: 40          # T = 40 bins -> 2 second history window
+forecast_horizon: 1       # H = 1 (one-step forecasting)
+
+# --- Reproducibility ---
+seed: 42
+
+# --- NWB-specific loading parameters ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null
+  quality_labels: ["good"]
+  brain_region: null
+  duration_limit_s: null
+
+# --- History features (disabled) ---
+history_features:
+  enabled: false
+
+# --- Covariates DISABLED (pure spike history) ---
+covariates:
+  enabled: false
+
+# --- Train/val/test splits ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Batch size ---
+batch_size: 512
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+
+# --- Session loading mode ---
+loader_mode: "lazy"

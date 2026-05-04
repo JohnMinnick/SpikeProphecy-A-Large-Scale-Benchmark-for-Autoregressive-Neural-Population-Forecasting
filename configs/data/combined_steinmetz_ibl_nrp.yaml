@@ -1,0 +1,64 @@
+# =============================================================================
+# configs/data/combined_steinmetz_ibl_nrp.yaml
+# Combined Steinmetz (39) + IBL Repeated Site (66) = 105 sessions.
+#
+# Uses pre-cached .npy session arrays from S3.
+# S3 prefix: jrm/spike-prophecy/inputs/combined-steinmetz-ibl/
+# =============================================================================
+
+# --- Data source ---
+# source_type "ibl" triggers pre-cached S3 download in nrp_train.py.
+# The actual data is a mix of Steinmetz + IBL, but the loader treats
+# them identically since they're all uint8 .npy session arrays.
+source:
+  type: "ibl"
+
+# --- IBL-specific settings (reused for combined cache S3 download) ---
+ibl:
+  tag: "combined"
+  max_sessions: 105
+  cache_dir: "data/raw/ibl"
+
+# --- Binning and windowing (matched across both datasets) ---
+bin_width_ms: 50
+history_bins: 10
+forecast_horizon: 1
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Unit filtering ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null
+  quality_labels: null
+  brain_region: null
+  duration_limit_s: null
+
+# --- History features (disabled for baseline) ---
+history_features:
+  enabled: false
+
+# --- Covariates DISABLED (pure spike history) ---
+covariates:
+  enabled: false
+
+# --- Train/val/test splits (matched across both datasets) ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Batch size ---
+batch_size: 512
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+
+# --- Session loading mode ---
+loader_mode: "lazy"

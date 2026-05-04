@@ -1,0 +1,45 @@
+# =============================================================================
+# SNN Distillation from Mamba — H=256, 3 Layers (Depth Ablation)
+# =============================================================================
+# Identical to distill_mamba_h256.yaml except num_layers=3.
+# Purpose: isolate whether 3 spiking layers hurts distillation vs 2-layer
+# baseline that achieved val_r ~0.4 on Steinmetz.
+#
+# Loss: L = PoissonNLL(student, y_true) + 0.5 * PoissonKL(mamba, student)
+#          + 0.001 * L1_spike_reg
+# =============================================================================
+
+# --- Student model architecture ---
+model:
+  type: "student_snn"
+  hidden_size: 256            # Same size as 2-layer baseline
+  beta: 0.9
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_beta: true
+  num_layers: 3               # ONLY CHANGE: 2 → 3
+  neuron_type: "rsynaptic"
+  alpha: 0.85
+
+# --- Distillation loss weights ---
+distillation:
+  distill_weight: 0.5
+  reg_weight: 0.001
+  reg_type: "l1"
+
+# --- Training hyperparameters ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  log_input: false

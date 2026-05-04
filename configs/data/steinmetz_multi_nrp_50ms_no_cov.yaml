@@ -1,0 +1,61 @@
+# =============================================================================
+# configs/data/steinmetz_multi_nrp_50ms_no_cov.yaml
+# Phase 2 ablation: No covariates — pure spike history only.
+#
+# Identical to steinmetz_multi_nrp_50ms_temporal_cov.yaml except:
+#   - covariates.enabled: false
+#
+# Purpose: Isolate how much of the LRU's performance comes from learning
+# intrinsic neural dynamics vs. stimulus-driven responses. If the no-cov
+# model matches the temporal-cov model, covariates add nothing. If it drops
+# significantly, the model relies heavily on stimulus features.
+# =============================================================================
+
+# --- Data source ---
+source:
+  type: "nwb_multi"
+  glob: "data/raw/Steinmetz2019_*.nwb"
+
+# --- Binning and windowing ---
+bin_width_ms: 50          # 50 ms bins (sweep 2 winner)
+history_bins: 10          # T = 10 bins -> 500 ms history window
+forecast_horizon: 1       # H = 1 (one-step forecasting)
+
+# --- Reproducibility ---
+seed: 42
+
+# --- NWB-specific loading parameters ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null
+  quality_labels: ["good"]
+  brain_region: null
+  duration_limit_s: null
+
+# --- History features (disabled) ---
+history_features:
+  enabled: false
+
+# --- Covariates DISABLED (pure spike history ablation) ---
+covariates:
+  enabled: false
+
+# --- Train/val/test splits ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Batch size ---
+batch_size: 512
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+
+# --- Session loading mode ---
+loader_mode: "lazy"

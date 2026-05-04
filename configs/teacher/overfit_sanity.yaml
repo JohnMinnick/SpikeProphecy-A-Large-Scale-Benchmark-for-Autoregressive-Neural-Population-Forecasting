@@ -1,0 +1,48 @@
+# =============================================================================
+# configs/teacher/overfit_sanity.yaml
+# Teacher config tuned for single-batch overfit sanity check.
+#
+# High LR, no scheduling, no early stopping, minimal model.
+# The goal is fast memorization of a single batch to verify that the
+# entire training pipeline (loss, optimizer, forward pass) works.
+# =============================================================================
+
+# --- Model architecture (minimal for fast convergence) ---
+model:
+  type: "lstm"
+  input_size: null           # Set automatically from data
+  hidden_size: 256           # Enough capacity for 736 real channels
+  num_layers: 2              # Two layers for sufficient expressiveness
+  dropout: 0.0               # No dropout (we WANT to overfit)
+  use_layer_norm: false      # Simpler = faster convergence
+  use_attention: false       # Not needed for memorization
+  use_population_coupling: false
+  output_distribution: "poisson"
+
+# --- Training (tuned for memorization) ---
+training:
+  epochs: 500                # Many iterations on one batch
+  val_every_n: 100           # Validate rarely (not the focus)
+  batch_size: 64             # Match data config batch size
+  learning_rate: 0.005       # High but stable LR for convergence
+  weight_decay: 0.0          # No regularization (we WANT to overfit)
+  optimizer: "adamw"
+  scheduler: "none"          # No LR decay
+  warmup_steps: 0            # No warmup
+  patience: 9999             # Effectively disable early stopping
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 0             # No workers needed for single batch
+  pin_memory: false
+  distributed: false

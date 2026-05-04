@@ -1,0 +1,38 @@
+# =============================================================================
+# Standalone SNN 3-Layer — depth-matched to ANN baselines
+# =============================================================================
+# Added 2026-04-22 per user request: matches the 3-layer depth used by
+# Mamba / HGRN2 / LRU / Transformer / LSTM / GatedDelta for a clean
+# depth-controlled comparison in Table 1.
+#
+# Note: the depth ablation in §4.4 shows 1L SNN is the best SNN
+# configuration; this 3L run is included for strict depth-matching.
+# =============================================================================
+
+model:
+  type: "student_snn"
+  architecture: "student_snn"
+  hidden_size: 256
+  beta: 0.9
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_beta: true
+  num_layers: 3              # DEPTH-MATCHED to 3-layer ANN baselines
+  neuron_type: "rsynaptic"
+  alpha: 0.85
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15
+  val_every_n_epochs: 1
+
+loss:
+  type: "poisson_nll"
+  log_input: false

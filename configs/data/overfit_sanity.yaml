@@ -1,0 +1,52 @@
+# =============================================================================
+# configs/data/overfit_sanity.yaml
+# Single real NWB session for the overfit sanity check.
+#
+# Loads one Steinmetz 2019 session (Cori, 2016-12-14) and bins at 50ms
+# (our best-performing resolution). The overfit_one_batch() method will
+# only use the FIRST BATCH from the train loader — the rest is discarded.
+# =============================================================================
+
+# --- Data source (single real session) ---
+source:
+  type: "nwb"
+  path: "data/raw/Steinmetz2019_Cori_2016-12-14.nwb"
+
+# --- Binning and windowing (match production settings) ---
+bin_width_ms: 50              # 50ms bins (best performer from Sweep 2)
+history_bins: 10              # 10 × 50ms = 500ms history window
+forecast_horizon: 1
+
+# --- Reproducibility ---
+seed: 42
+
+# --- NWB loading parameters ---
+nwb:
+  sampling_frequency: 30000.0
+  min_firing_rate_hz: 1.0
+  max_units: null              # Use all good units (realistic)
+  quality_labels: ["good"]
+  brain_region: null
+  duration_limit_s: null
+
+# --- No history features (keep it simple) ---
+history_features:
+  enabled: false
+
+# --- Splits ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Dataset parameters ---
+dataset:
+  history_bins: 10
+  batch_size: 64
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 0               # No workers needed (single batch)
+  pin_memory: false
+  distributed: false

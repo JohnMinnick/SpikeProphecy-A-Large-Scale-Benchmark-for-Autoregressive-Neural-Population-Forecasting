@@ -1,0 +1,62 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_mamba_session_heads.yaml
+# Mamba baseline with session-specific output heads.
+#
+# Same backbone as nrp_teacher_mamba.yaml but with 39 session heads
+# instead of a shared output projection. Each session gets its own linear
+# output layer sized to that session's neuron count (m_i).
+#
+# Comparison targets:
+#   - Mamba shared heads: r=0.4991
+#   - LRU v2 session heads: r=0.4848
+#
+# d_model=256, num_layers=3, d_state=16, d_conv=4, expand=2
+# Estimated params: ~1.9M + session-specific output heads
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "mamba"
+  architecture: "mamba"
+  input_size: null
+  hidden_size: 256            # d_model — matches LRU v2
+  num_layers: 3               # Same depth as LRU v2
+  d_state: 16                 # SSM state dimension
+  d_conv: 4                   # Local convolution width
+  expand: 2                   # Inner dimension = expand × d_model
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Last-timestep readout
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+  session_heads: 39           # One output head per session
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 2
+  batch_size: 512
+  learning_rate: 0.0003       # Same as shared-heads Mamba
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

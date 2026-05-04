@@ -1,0 +1,46 @@
+# =============================================================================
+# Student SNN — 1-Layer NRP Configuration
+# =============================================================================
+# Single spiking layer for depth ablation study.
+# Tests whether one RSynaptic layer with recurrence suffices for population
+# dynamics forecasting.
+#
+# Loss: L = PoissonNLL(student, y_true) + beta * PoissonKL(teacher, student)
+#          + alpha * L1_spike_reg
+# =============================================================================
+
+# --- Student model architecture ---
+model:
+  type: "student_snn"
+  hidden_size: 256          # Same as teacher for fair comparison
+  beta: 0.9                 # Membrane potential decay rate
+  threshold: 1.0            # Spike threshold
+  gradient_slope: 25.0      # Surrogate gradient slope
+  learn_beta: true           # Per-neuron learnable decay constants
+  num_layers: 1              # SINGLE LAYER — depth ablation
+  neuron_type: "rsynaptic"   # Two-compartment (synaptic + membrane)
+  alpha: 0.85                # Synaptic current decay (RSynaptic only)
+  dropout: 0.0               # No dropout for 1L (too aggressive)
+
+# --- Distillation loss weights ---
+distillation:
+  distill_weight: 0.0        # Beta: KL disabled by default (pure supervised). Override with --distill-weight CLI.
+  reg_weight: 0.001          # Alpha: L1 spike sparsity regularization
+  reg_type: "l1"             # Regularization type: "l1" or "l2"
+
+# --- Training hyperparameters ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15               # Early stopping patience
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  log_input: false            # PoissonNLL expects rates, not log-rates

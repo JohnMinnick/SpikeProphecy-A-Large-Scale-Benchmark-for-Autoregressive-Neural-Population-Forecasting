@@ -1,0 +1,60 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_mamba.yaml
+# Mamba baseline — selective state space model.
+#
+# Designed for fair comparison against LRU v2:
+#   - Matched parameter count (~1.3M via d_state=16, expand=2)
+#   - Same training schedule, loss, and data as LRU v2
+#   - Inherently causal (no mask needed)
+#
+# d_model=256, num_layers=3, d_state=16, d_conv=4, expand=2
+# Estimated params: ~1.3M (close to LRU v2's 1.24M)
+#
+# NOTE: Requires `mamba-ssm` package — Linux + CUDA only (NRP).
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "mamba"
+  architecture: "mamba"
+  input_size: null
+  hidden_size: 256            # d_model — matches LRU v2
+  num_layers: 3               # Same depth as LRU v2
+  d_state: 16                 # SSM state dimension
+  d_conv: 4                   # Local convolution width
+  expand: 2                   # Inner dimension = expand × d_model
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Last-timestep readout
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 1
+  batch_size: 512
+  learning_rate: 0.0003       # Same as LRU v2
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

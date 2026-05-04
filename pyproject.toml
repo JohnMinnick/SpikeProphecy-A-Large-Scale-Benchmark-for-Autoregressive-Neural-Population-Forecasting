@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spike-prophecy"
+version = "0.1.0"
+description = "Interference-robust spike forecasting via ANN-to-SNN distillation."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "John R. Minnick"},
+]
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "snntorch>=0.9",
+    "MEArec>=1.9",
+    "spikeinterface>=0.101",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+    "h5py>=3.8",
+    "tqdm>=4.65",
+    "fastdtw>=0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pip-tools>=7.0",
+    "ruff>=0.4",
+]
+nwb = [
+    "pynwb>=2.5",
+]
+manim = [
+    "manim>=0.18",
+    "manim-slides[pyside6-full]>=5.5",
+]
+nrp = [
+    "wandb>=0.16",
+    "boto3>=1.28",
+]
+slides = [
+    "python-pptx>=1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

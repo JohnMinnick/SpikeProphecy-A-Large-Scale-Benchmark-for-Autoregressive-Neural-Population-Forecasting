@@ -1,0 +1,43 @@
+# =============================================================================
+# Standalone SNN — SelectiveRSynaptic (Spiking Mamba), H=256, 2 Layers
+# =============================================================================
+# Uses input-dependent membrane decay β_t = σ(W · x_t + b) to give the SNN
+# Mamba's selective gating capability natively. No distillation needed.
+#
+# Mathematical connection:
+#   Mamba SSM:    h_t = Ā(x_t) · h_{t-1} + B̄(x_t) · x_t
+#   This neuron:  v_t = β(x_t) · v_{t-1} + syn_t
+#
+# Same H=256, 2L config as the RSynaptic baseline for fair comparison.
+# =============================================================================
+
+# --- Student model architecture ---
+model:
+  type: "student_snn"
+  architecture: "student_snn"
+  hidden_size: 256
+  beta: 0.9
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_beta: true
+  num_layers: 2
+  neuron_type: "selective_rsynaptic"   # The Spiking Mamba neuron
+  alpha: 0.85
+
+# --- Training hyperparameters ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  type: "poisson_nll"
+  log_input: false

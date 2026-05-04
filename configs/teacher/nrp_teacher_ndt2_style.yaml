@@ -1,0 +1,64 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_ndt2_style.yaml
+#
+# NDT2-style transformer baseline (NeurIPS reviewer 2 ask).
+#
+# Differences vs nrp_teacher_transformer.yaml:
+#   - bidirectional: true       (drops causal mask, full bidirectional attn)
+#   - masked_bin_frac: 0.15     (BERT-style random bin masking during train)
+#   - use_attention: true       (attention readout over all bins, not last)
+#
+# We frame this honestly in the paper as "NDT2-style" rather than the
+# official NDT2 implementation: the architecture uses bidirectional masked
+# attention with random spike-bin masking during training, which is the
+# core NDT/NDT2 inductive prior, but our training pipeline runs it as a
+# next-bin forecaster (our standard target) rather than the masked-LM
+# reconstruction target the original NDT2 uses. This isolates the
+# bidirectional-attention contribution.
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "transformer"
+  architecture: "transformer"
+  input_size: null
+  hidden_size: 256
+  num_layers: 3
+  n_heads: 8
+  d_ff: 1024
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: true            # attention readout (matters more under bidirectional)
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+  n_covariates: 0
+  covariate_mode: "additive"
+
+  # NDT2-style additions
+  bidirectional: true            # full bidirectional attention
+  masked_bin_frac: 0.15          # random bin-masking ratio (BERT-style)
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  reduction: "mean"
+
+# --- Training ---
+training:
+  epochs: 50
+  learning_rate: 5.0e-4
+  weight_decay: 0.01
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_steps: 1000
+  grad_clip_norm: 1.0
+  patience: 15
+  val_every_n_epochs: 1
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 4
+
+seed: 42

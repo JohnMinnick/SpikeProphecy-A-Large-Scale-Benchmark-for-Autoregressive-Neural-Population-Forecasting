@@ -1,0 +1,53 @@
+# =============================================================================
+# Student SNN — β=0 KL Ablation Config (NRP)
+# =============================================================================
+# Identical to distill_nrp.yaml but with distill_weight: 0.0 (β = 0).
+#
+# PURPOSE: Mechanistic test for NeurIPS paper §4.3.
+#   - distill_weight: 0.0 → no PoissonKL(teacher, student) term
+#   - Only PoissonNLL(student, y_true) + L1 spike reg remain
+#   - Teacher is still loaded (for the wrapper infrastructure) but
+#     its soft targets have zero weight in the loss
+#
+# HYPOTHESIS: If the KL term is the culprit for distillation underperformance,
+# setting β=0 should recover performance to ~0.447 (standalone SNN baseline).
+# If it doesn't, the degradation is caused by something else (e.g., architecture
+# sensitivity to the teacher's data distribution, or the multi-head overhead).
+#
+# EXPECTED RESULT: val_r ≈ 0.44-0.45 (matching standalone_snn_v12b)
+# =============================================================================
+
+# --- Student model architecture (identical to distill_nrp and standalone) ---
+model:
+  type: "student_snn"
+  hidden_size: 256          # Same as teacher for fair comparison
+  beta: 0.9                 # Membrane potential decay rate
+  threshold: 1.0            # Spike threshold
+  gradient_slope: 25.0      # Surrogate gradient slope
+  learn_beta: true          # Per-neuron learnable decay constants
+  num_layers: 2             # Stacked spiking layers
+  neuron_type: "rsynaptic"  # Two-compartment (synaptic + membrane)
+  alpha: 0.85               # Synaptic current decay (RSynaptic only)
+
+# --- Distillation loss weights --- β=0: no KL, pure Poisson NLL ---
+distillation:
+  distill_weight: 0.0       # β = 0 → KL disabled → pure data supervision
+  reg_weight: 0.001         # Alpha: L1 spike sparsity (same as distill_nrp)
+  reg_type: "l1"
+
+# --- Training hyperparameters (identical to distill_nrp for fair comparison) ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  log_input: false          # PoissonNLL expects rates, not log-rates

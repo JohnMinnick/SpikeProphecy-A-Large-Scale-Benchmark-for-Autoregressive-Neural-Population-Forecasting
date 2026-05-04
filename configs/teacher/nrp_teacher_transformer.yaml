@@ -1,0 +1,57 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_transformer.yaml
+# Transformer baseline — encoder-only with causal attention masking.
+#
+# Designed for fair comparison against LRU v2:
+#   - Matched parameter count (~1.2M via smaller d_ff)
+#   - Same training schedule, loss, and data as LRU v2
+#   - Causal mask prevents future information leakage
+#
+# d_model=256, n_heads=8, num_layers=3, d_ff=512
+# Estimated params: ~1.3M (close to LRU v2's 1.24M)
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "transformer"
+  architecture: "transformer"
+  input_size: null
+  hidden_size: 256            # d_model — matches LRU v2
+  num_layers: 3               # Same depth as LRU v2
+  n_heads: 8                  # 256/8 = 32 dim per head
+  d_ff: 512                   # Reduced from default 4×256=1024 to match param count
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Use last-timestep readout (not learned attention)
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 2
+  batch_size: 512
+  learning_rate: 0.0003       # Same as LRU v2
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 3000          # Transformers need warmup for stable attention
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false        # Keep off for consistency with LRU v2 comparison

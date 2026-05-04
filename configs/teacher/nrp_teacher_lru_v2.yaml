@@ -1,0 +1,54 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_lru_v2.yaml
+# LRU Teacher v2 — with ring initialization, residual connections, and
+# per-layer LayerNorm fixes. Lower LR and longer warmup for stability.
+#
+# Changes vs nrp_teacher_lru.yaml:
+#   - learning_rate: 0.0003 (lower — LRU has no gates to dampen gradients)
+#   - warmup_steps: 3000 (longer ramp-up for stable complex recurrence)
+#   - compile_model: false (inductor crashes on complex ops)
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "lru"
+  architecture: "lru"
+  input_size: null
+  hidden_size: 256
+  num_layers: 3
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false       # Disabled: instantaneous readout for SNN compat (Phase 1)
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"
+  gated: false
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 2
+  batch_size: 512
+  learning_rate: 0.0003       # Lower than LSTM (0.0005) — no gates to dampen
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 3000          # Longer warmup for stable eigenvalue learning
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false        # Disabled — LRU complex recurrence crashes inductor

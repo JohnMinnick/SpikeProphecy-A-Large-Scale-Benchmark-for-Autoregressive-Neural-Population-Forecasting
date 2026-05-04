@@ -1,0 +1,28 @@
+# Mamba teacher config for SHD classification benchmark.
+# Target: >95% test accuracy on 20-class spoken digit classification.
+model:
+  input_size: 700       # SHD cochlea channels
+  d_model: 128          # Compact model (SHD is small)
+  n_layers: 2           # 2 Mamba blocks
+  n_classes: 20         # 10 digits × 2 languages
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  dropout: 0.2
+
+data:
+  data_dir: "data/shd"
+  bin_size_ms: 10.0     # 10ms time bins
+  max_time_ms: 1000.0   # 1 second max (100 time steps)
+
+training:
+  epochs: 150
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 1.0e-4
+
+seed: 42
+
+compute:
+  device: "auto"
+  num_workers: 4

@@ -1,0 +1,64 @@
+Author order (final, 2026-05-03):
+
+  1. John R. Minnick
+  2. Jinghui Geng
+  3. Kamran Hussain
+  4. Jesus Gonzalez-Ferrer
+  5. Ash Robbins
+  6. Mohammed A. Mostajo-Radji
+  7. David Haussler
+  8. Jason K. Eshraghian
+  9. Mircea Teodorescu
+
+All authors: University of California, Santa Cruz.
+
+Corresponding author: John R. Minnick (97minnick@gmail.com)
+
+OpenReview submission needs each author's full name, email, ORCID
+(if available), and institution-of-record. Fill these in below as
+each coauthor confirms their preferred entry:
+
+  1. John R. Minnick
+       email:   97minnick@gmail.com
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  2. Jinghui Geng
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  3. Kamran Hussain
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  4. Jesus Gonzalez-Ferrer
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  5. Ash Robbins
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  6. Mohammed A. Mostajo-Radji
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  7. David Haussler
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  8. Jason K. Eshraghian
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz
+
+  9. Mircea Teodorescu
+       email:   <fill>
+       orcid:   <fill>
+       inst:    University of California, Santa Cruz

@@ -1,0 +1,45 @@
+# GAC-SNN output-only KD baseline for SHD (no mechanism alignment).
+# Same architecture as full GAC-SNN but all gammas = 0.
+model:
+  type: "gac_snn"
+  input_size: 700
+  hidden_size: 128
+  num_layers: 2
+  beta: 0.9
+  alpha: 0.85
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_alpha: true
+  learn_threshold: false
+  readout_mode: "final_mem"
+  dropout: 0.2
+  enable_stp: true
+  enable_dendrite: true
+  num_dendritic_branches: 4
+  task: "classification"
+  n_classes: 20
+
+data:
+  data_dir: "data/shd"
+  bin_size_ms: 10.0
+  max_time_ms: 1000.0
+
+training:
+  epochs: 200
+  batch_size: 256
+  learning_rate: 0.0005
+  weight_decay: 1.0e-5
+  patience: 30
+
+distillation:
+  distill_weight: 0.3
+  kd_temperature: 2.0
+  gamma_tau: 0.0      # No alignment
+  gamma_stp: 0.0
+  gamma_dend: 0.0
+
+seed: 42
+
+compute:
+  device: "auto"
+  num_workers: 4

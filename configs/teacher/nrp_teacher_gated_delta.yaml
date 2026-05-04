@@ -1,0 +1,60 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_gated_delta.yaml
+# GatedDeltaNet baseline — non-diagonal SSM control.
+#
+# Added 2026-04-22 per J. Eshraghian follow-up: tests whether the
+# diagonal-SSM inductive-prior hypothesis survives a strong modern
+# non-diagonal SSM control. If GatedDeltaNet underperforms Mamba/HGRN2,
+# the hypothesis gets real evidence; if it matches, the hypothesis
+# weakens.
+#
+# Matched budget against Mamba/HGRN2 for fair comparison:
+#   - Same d_model=256, num_layers=3, dropout=0.2
+#   - Same optimizer (AdamW), LR (3e-4), schedule (cosine + warmup), seed=42
+#   - Same data config / loss / preprocessing
+#
+# NOTE: Vendored implementation (no flash-linear-attention dep).
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "gated_delta"
+  architecture: "gated_delta"
+  input_size: null
+  hidden_size: 256            # d_model — matches Mamba and HGRN2
+  num_layers: 3               # Same depth as Mamba and HGRN2
+  num_heads: 4                # 4 heads of 64-dim each
+  head_dim: 64                # per-head k/v/q dim; d_state = 64x64 matrix
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Last-timestep readout
+  output_distribution: "poisson"
+
+# --- Training (matches Mamba/HGRN2 recipe exactly) ---
+training:
+  epochs: 50
+  val_every_n: 1
+  batch_size: 512
+  learning_rate: 0.0003
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

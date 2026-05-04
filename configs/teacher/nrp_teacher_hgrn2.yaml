@@ -1,0 +1,59 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_hgrn2.yaml
+# HGRN2 baseline — diagonal linear-RNN state space model.
+#
+# Added 2026-04-21 per advisor + J. Eshraghian feedback: provides a second
+# diagonal SSM data point to test the hypothesis that diagonal recurrent
+# structure (independent hidden states, activation-level coupling) is a
+# natural inductive prior for neural population data.
+#
+# Matched architecture budget against TeacherMamba for a fair comparison:
+#   - Same d_model=256, num_layers=3, dropout=0.2
+#   - Same optimizer (AdamW), LR (3e-4), schedule (cosine + warmup), seed=42
+#   - Same data config / loss / preprocessing
+#
+# NOTE: Requires `flash-linear-attention` — Linux + CUDA only (NRP).
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "hgrn2"
+  architecture: "hgrn2"
+  input_size: null
+  hidden_size: 256            # d_model — matches Mamba
+  num_layers: 3               # Same depth as Mamba
+  num_heads: 1                # reserved for API compat (unused in vendored impl)
+  expand_ratio: 2             # d_state = hidden_size * expand_ratio = 512
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Last-timestep readout (matches Mamba config)
+  output_distribution: "poisson"
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 1
+  batch_size: 512
+  learning_rate: 0.0003       # Matched with Mamba config
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

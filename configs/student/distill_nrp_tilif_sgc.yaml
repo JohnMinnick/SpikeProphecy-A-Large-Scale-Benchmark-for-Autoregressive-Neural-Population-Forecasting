@@ -1,0 +1,69 @@
+# =============================================================================
+# TI-LIF + SGC Distillation from Mamba — KOSMOS Configuration
+# =============================================================================
+# Extends multi-head SNN distillation with:
+#   - TI-LIF ternary neurons {-1, 0, +1} for bipolar signal representation
+#   - SGC (Smoothed Gradient Compensation) Tanh bypass for gradient flow
+#   - Hidden-state MSE alignment (dual-level distillation)
+#
+# Designed for use with --mimetic-init flag which adds:
+#   - Teacher → student weight transfer (input_proj, mirrored output_proj)
+#   - Threshold calibration from teacher activation statistics
+#   - Threshold annealing over training
+#
+# Loss: L = L_dynamics + λ_stim * L_stimulus + λ_resp * L_response
+#          + λ_align * L_hidden_align
+#
+# L_dynamics = PoissonNLL(student, y_true) + β * PoissonKL(mamba, student)
+#              + α * L1_spike_reg
+# L_hidden_align = MSE(student_membrane, teacher_hidden)
+# =============================================================================
+
+# --- Student model architecture ---
+model:
+  type: "student_snn"
+  hidden_size: 256            # Same as Mamba teacher d_model for alignment
+  beta: 0.9                   # Membrane potential decay rate
+  threshold: 1.0              # Will be overridden by mimetic calibration
+  gradient_slope: 25.0        # Surrogate gradient slope
+  learn_beta: true            # Per-neuron learnable decay constants
+  num_layers: 3               # << Matched to teacher (Mamba has 3 blocks)
+  neuron_type: "ti_lif"       # << Ternary-Integer LIF: {-1, 0, +1}
+  alpha: 0.85                 # Synaptic current decay (unused for TI-LIF)
+  dropout: 0.2                # << Matched to teacher dropout
+  sgc_enabled: true           # << Enable SGC bypass (Tanh smooth path)
+  sgc_warmdown_epochs: 10     # Epochs to anneal SGC lambda 0.5 → 0.0
+  sgc_lambda_init: 0.5        # Starting SGC blend factor
+
+  # Multi-head: auxiliary behavioral heads on shared backbone
+  auxiliary_heads:
+    - "stimulus"              # Left/right visual contrast (16-class)
+    - "response"              # Response choice classification (3 classes)
+
+# --- Distillation loss weights ---
+distillation:
+  distill_weight: 0.5         # β: Poisson KL(teacher, student) weight
+  reg_weight: 0.001           # α: L1 spike sparsity regularization
+  reg_type: "l1"              # Regularization type
+  hidden_align_weight: 0.1    # << NEW: MSE hidden-state alignment weight
+
+  # Multi-head auxiliary loss weights
+  stimulus_weight: 0.1        # λ_stim: contrast classification weight
+  response_weight: 0.1        # λ_resp: response classification weight
+
+# --- Training hyperparameters ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15                # Early stopping patience
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  log_input: false            # PoissonNLL expects rates, not log-rates

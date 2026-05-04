@@ -1,0 +1,44 @@
+# =============================================================================
+# SNN Distillation from Mamba — H=256, 2 Layers (Same Size as Baseline)
+# =============================================================================
+# Same-size distillation: does Mamba teacher beat standalone at full capacity?
+# This is a direct comparison: Mamba teacher vs LRU teacher vs no teacher.
+#
+# Loss: L = PoissonNLL(student, y_true) + 0.5 * PoissonKL(mamba, student)
+#          + 0.001 * L1_spike_reg
+# =============================================================================
+
+# --- Student model architecture (same as standalone baseline) ---
+model:
+  type: "student_snn"
+  hidden_size: 256            # Same size as standalone baseline
+  beta: 0.9
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_beta: true
+  num_layers: 2               # Same depth as standalone baseline
+  neuron_type: "rsynaptic"
+  alpha: 0.85
+
+# --- Distillation loss weights ---
+distillation:
+  distill_weight: 0.5
+  reg_weight: 0.001
+  reg_type: "l1"
+
+# --- Training hyperparameters ---
+training:
+  epochs: 50
+  learning_rate: 0.001
+  batch_size: 512
+  scheduler: "cosine"
+  warmup_epochs: 3
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  seed: 42
+  patience: 15
+  val_every_n_epochs: 1
+
+# --- Loss config ---
+loss:
+  log_input: false

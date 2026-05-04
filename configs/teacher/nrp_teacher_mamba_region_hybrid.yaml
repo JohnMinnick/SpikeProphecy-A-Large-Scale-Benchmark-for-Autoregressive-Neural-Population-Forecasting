@@ -1,0 +1,57 @@
+# =============================================================================
+# configs/teacher/nrp_teacher_mamba_region_hybrid.yaml
+# Mamba with RegionHybridLoss — NegBin for hippocampus, Poisson for rest.
+#
+# KOSMOS Discovery #3: Negative binomial loss significantly improves
+# hippocampal neuron predictions (+6.93 ΔLL). This config enables
+# the hybrid loss that applies NegBin to CA1/CA3/DG/SUB and Poisson
+# to all other brain regions.
+#
+# Model must output_distribution: negbin to produce dispersion params.
+# =============================================================================
+
+# --- Model architecture ---
+model:
+  type: "mamba"
+  architecture: "mamba"
+  input_size: null
+  hidden_size: 256            # d_model — matches baseline
+  num_layers: 3               # Same depth as baseline
+  d_state: 16                 # SSM state dimension
+  d_conv: 4                   # Local convolution width
+  expand: 2                   # Inner dimension = expand × d_model
+  dropout: 0.2
+  use_layer_norm: true
+  use_attention: false        # Last-timestep readout
+  use_population_coupling: false
+  coupling_hidden_size: 32
+  output_distribution: "poisson"  # RegionHybridLoss handles NegBin internally
+
+# --- Training ---
+training:
+  epochs: 50
+  val_every_n: 2
+  batch_size: 512
+  learning_rate: 0.0003       # Same as baseline
+  weight_decay: 1.0e-4
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 1000
+  patience: 30
+  grad_clip_norm: 1.0
+
+# --- Loss (RegionHybridLoss — KOSMOS Batch 3) ---
+loss:
+  type: "region_hybrid"       # NegBin for hippocampus, Poisson for rest
+  log_input: false
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 6
+  pin_memory: true
+  distributed: false
+  compile_model: false

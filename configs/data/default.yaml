@@ -1,0 +1,97 @@
+# =============================================================================
+# configs/data/default.yaml
+# Baseline data-generation and preprocessing configuration.
+#
+# Expected keys:
+#   source          (dict)  : Data source type and path.
+#   bin_width_ms    (int)   : Temporal bin width in milliseconds.
+#   history_bins    (int)   : Number of history bins (T).
+#   forecast_horizon (int)  : Number of future bins to predict (H).
+#   seed            (int)   : Random seed for reproducibility.
+#   spikeinterface  (dict)  : SpikeInterface generator parameters (primary).
+#   mearec          (dict)  : MEArec simulator parameters (Linux fallback).
+#   splits          (dict)  : Train/val/test split ratios.
+#   compute         (dict)  : Compute environment settings.
+# =============================================================================
+
+# --- Data source ---
+source:
+  type: "spikeinterface"            # Options: spikeinterface, mearec, maxwell
+  path: "data/raw"                  # Path to raw recording files (relative to repo root)
+
+# --- Binning and windowing ---
+bin_width_ms: 10          # Δt = 10 ms (launch default from soul doc §4)
+history_bins: 50          # T = 50 bins → 500 ms history window
+forecast_horizon: 1       # H = 1 (Iteration 1: one-step forecasting only)
+
+# --- Reproducibility ---
+seed: 42
+
+# --- SpikeInterface generator parameters (primary, no NEURON needed) ---
+spikeinterface:
+  probe: "Neuropixels1-128"         # Probe geometry from probeinterface
+  num_neurons: 20                    # Number of simulated units
+  duration_s: 600                    # Recording duration in seconds
+  sampling_frequency: 30000.0        # Sampling rate in Hz
+  noise:
+    levels: [12.0, 15.0]             # Noise level range (µV std)
+    spatial_decay: 25.0              # Spatial correlation decay (µm)
+  drift:
+    mode: "zigzag"                   # Options: zigzag, bumps, random_walk
+    amplitude_factor: 0.5            # Drift amplitude scaling
+    period_s: 200                    # Drift period in seconds
+    non_rigid_gradient: null         # Non-rigid gradient (null = rigid drift)
+  firing:
+    rates: [2.0, 8.0]               # Firing rate range (Hz)
+    refractory_period_ms: 4.0        # Minimum inter-spike interval
+  templates:
+    ms_before: 1.5                   # Template pre-peak window
+    ms_after: 3.0                    # Template post-peak window
+    alpha: [150.0, 500.0]            # Template amplitude range
+    spatial_decay: [10, 45]          # Template spatial decay range
+
+# --- MEArec simulator parameters (for Linux with NEURON available) ---
+# Uncomment and set source.type to "mearec" when running on Linux:
+#mearec:
+#  probe: "Neuronexus-32"
+#  n_neurons: 20
+#  duration_s: 600
+#  noise:
+#    level: 10
+#    color: true
+#  drift:
+#    enabled: true
+#    velocity_um_per_min: 5.0
+#    direction: "vertical"
+#  overlap:
+#    synchrony_rate: 0.01
+#    bursting: false
+
+# --- Spike-history input features (ADR-0009 Batch B) ---
+# These features augment each input bin with temporal context.
+# All features are strictly causal (computed from past bins only).
+# Master toggle must be true AND individual features enabled.
+history_features:
+  enabled: false            # Master toggle (false = no features added)
+  isi:
+    enabled: false          # Normalized time since last spike per unit
+    max_isi_ms: 500.0       # Clip ISI at this value (normalized to 1.0)
+  ema_rate:
+    enabled: false          # Exponential moving average of spike counts
+    alpha: 0.1              # EMA smoothing factor (smaller = smoother)
+  refractory:
+    enabled: false          # Binary flag for sub-refractory-period bins
+    refractory_bins: 1      # Number of bins defining refractory period
+
+# --- Train/val/test splits ---
+splits:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+
+# --- Compute ---
+compute:
+  device: "auto"              # auto | cpu | cuda | cuda:N
+  num_workers: 4              # DataLoader worker processes
+  pin_memory: true            # Pin memory for faster GPU transfer
+  distributed: false          # Enable DistributedDataParallel

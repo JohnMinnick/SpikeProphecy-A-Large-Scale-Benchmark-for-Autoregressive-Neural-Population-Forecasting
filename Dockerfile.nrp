@@ -1,0 +1,75 @@
+# =============================================================================
+# SpikeProphecy — NRP Docker Image
+# =============================================================================
+# CUDA-enabled Python image for GPU training on the NRP Nautilus cluster.
+# Extends the NRP template base with SpikeProphecy-specific dependencies.
+#
+# Build (from repo root):
+#   docker buildx build --platform=linux/amd64 -f Dockerfile.nrp -t hitpunch/spike-prophecy:latest .
+#
+# Push:
+#   docker push hitpunch/spike-prophecy:latest
+# =============================================================================
+
+# Use CUDA devel image (not runtime) — mamba-ssm/causal-conv1d need nvcc
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONIOENCODING=utf-8
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+# Unbuffered Python output for real-time pod log streaming
+ENV PYTHONUNBUFFERED=1
+
+# ---- System dependencies ----
+RUN apt-get update && apt-get install -y \
+    python3.10 python3-pip python3.10-venv \
+    git build-essential gfortran pkg-config \
+    libhdf5-dev libcurl4-openssl-dev libssl-dev libxml2-dev \
+  && ln -sf /usr/bin/python3.10 /usr/bin/python \
+  && ln -sf /usr/bin/pip3 /usr/bin/pip \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# ---- Python dependencies ----
+RUN pip install --upgrade pip setuptools wheel
+
+# Install PyTorch first (CUDA 12.1 — matches base image)
+RUN pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+# Install NRP pipeline utilities (S3, W&B)
+COPY nrp/requirements.txt /tmp/nrp_requirements.txt
+RUN pip install -r /tmp/nrp_requirements.txt
+
+# Install SpikeProphecy dependencies
+COPY pyproject.toml /tmp/pyproject.toml
+RUN pip install pyyaml>=6.0 numpy>=1.24 scipy>=1.10 matplotlib>=3.7 \
+    h5py>=3.8 tqdm>=4.65 spikeinterface>=0.101 pynwb>=2.5 \
+    wandb>=0.16 boto3>=1.28 scikit-learn>=1.3 ONE-api>=2.7
+
+# Install snnTorch for SNN experiments (standalone + distilled)
+RUN pip install snntorch>=0.7
+
+# Install mamba-ssm with pre-built wheels (requires nvcc from devel image).
+# Pin to 2.2.3.post2 which has verified CUDA 12.x wheels.
+# --no-build-isolation ensures pip uses existing PyTorch for build deps.
+RUN pip install causal-conv1d==1.5.0.post8 --no-build-isolation && \
+    pip install mamba-ssm==2.2.3.post2 --no-build-isolation
+
+# ---- Copy project files ----
+WORKDIR /workspace
+
+# Copy NRP pipeline utilities first (S3 helpers, etc.)
+COPY nrp/ /workspace/nrp/
+
+# Copy SpikeProphecy source code and configs
+COPY src/ /workspace/src/
+COPY scripts/ /workspace/scripts/
+COPY configs/ /workspace/configs/
+COPY pyproject.toml /workspace/pyproject.toml
+
+# Install the SpikeProphecy package in editable mode
+RUN pip install -e /workspace
+
+# Create data directory (NWB files will be downloaded from S3 at runtime)
+RUN mkdir -p /workspace/data/raw /workspace/experiments /workspace/outputs

@@ -1,0 +1,44 @@
+# Student SNN Training Configuration
+
+experiment:
+  name: "student_baseline"
+  seed: 42
+
+compute:
+  device: "auto"     # "auto", "cpu", "cuda"
+  distributed: false # Use DistributedDataParallel
+
+data:
+  # Path to the directory containing extract_targets.py output
+  # Should contain distill_targets_{train,val,test}.pt
+  targets_dir: "experiments/2026-02-13_teacher_modulated_v2/targets"
+  batch_size: 64
+  num_workers: 0
+
+model:
+  type: "student_snn"
+  input_size: 20      # Matches teacher/data
+  hidden_size: 128    # Can be smaller than teacher? Matching for now.
+  beta: 0.9           # Membrane decay rate
+  threshold: 1.0      # Spike threshold
+  gradient_slope: 25.0
+  learn_beta: true    # Per-neuron learnable membrane time constant
+  num_layers: 2       # Stacked spiking layers (match teacher depth)
+  neuron_type: "rsynaptic"  # "rleaky" or "rsynaptic" (two-compartment)
+  alpha: 0.85         # Synaptic current decay (RSynaptic only)
+
+distillation:
+  distill_weight: 0.5 # Beta: Weight for Poisson KL(teacher, student)
+  reg_weight: 0.0     # Alpha: Weight for spike regularization (L1/L2)
+  reg_type: "l1"      # "l1" or "l2"
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  warmup_epochs: 5
+  patience: 10
+  grad_clip_norm: 1.0
+
+loss:
+  log_input: false    # PoissonNLL expects rates, not log-rates

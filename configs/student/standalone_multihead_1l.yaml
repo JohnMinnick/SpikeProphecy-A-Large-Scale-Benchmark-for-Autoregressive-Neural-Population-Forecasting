@@ -1,0 +1,38 @@
+# Standalone 1-layer SNN with multi-head behavioral decode
+# Architecture: Single RSynaptic layer (702K params) + stimulus/response heads
+# Target: Combined Steinmetz + IBL dataset (105 sessions)
+# Usage:
+#   python scripts/train_snn_standalone.py \
+#     --data-config configs/data/combined_steinmetz_ibl_nrp.yaml \
+#     --student-config configs/student/standalone_multihead_1l.yaml \
+#     --auxiliary-heads stimulus response \
+#     --slug snn-multihead-1l-combined-v1
+
+model:
+  hidden_size: 256
+  num_layers: 1
+  neuron_type: rsynaptic
+  beta: 0.9
+  alpha: 0.85
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_beta: true
+  learn_threshold: true
+  use_layer_norm: true
+  dropout: 0.1
+  readout_mode: exponential
+  auxiliary_heads:
+    - stimulus
+    - response
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  batch_size: 512
+  seed: 42
+  patience: 15
+  grad_clip_norm: 1.0
+  spike_reg_lambda: 0.0001
+  scheduler: cosine
+  warmup_steps: 1000

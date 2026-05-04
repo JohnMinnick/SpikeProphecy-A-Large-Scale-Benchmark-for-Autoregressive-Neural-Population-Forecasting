@@ -1,0 +1,72 @@
+# =============================================================================
+# configs/student/distill_gac_snn.yaml
+# GAC-SNN mechanism-aligned distillation config.
+#
+# KOSMOS Tier 2F: Align SNN biophysics to Mamba's internal signals.
+# Three alignment pathways:
+#   1. Δ ↔ τ(t): SelectiveRSynaptic (input-dependent β)
+#   2. B ↔ STP: Short-term synaptic plasticity
+#   3. C ↔ dendrite: Dendritic branch gating
+#
+# The GacStudentSNN uses SelectiveRSynaptic neurons (selective_rsynaptic)
+# with STP and dendritic gating modules.
+# =============================================================================
+
+# --- Student SNN Architecture ---
+model:
+  type: "gac_snn"
+  hidden_size: 256              # Match teacher d_model for fair comparison
+  num_layers: 2                 # Two stacked spiking layers
+  beta: 0.9                     # Initial membrane decay (learned via gate)
+  alpha: 0.85                   # Synaptic current decay
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_alpha: true             # Allow alpha to be learned per-neuron
+  learn_threshold: false
+  readout_mode: "exponential"   # Exponential-weighted spike readout
+  dropout: 0.2
+  enable_stp: true              # STP module (aligned to Mamba B)
+  enable_dendrite: true         # Dendritic gating (aligned to Mamba C)
+  num_dendritic_branches: 4     # 4 dendritic branches
+
+# --- Training ---
+training:
+  epochs: 200
+  batch_size: 512
+  learning_rate: 0.0005
+  weight_decay: 1.0e-5          # Light regularization
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 500
+  patience: 40                  # Must survive warmup→rampup transition (epoch 30-50)
+  grad_clip_norm: 1.0
+  seed: 42
+
+# --- Loss: Mechanism Alignment ---
+loss:
+  type: "poisson_nll"          # Parent Trainer uses this for val metrics
+  log_input: false
+
+# --- Distillation weights ---
+distillation:
+  distill_weight: 0.5           # KL distillation weight
+  distill_weight_min: 0.1       # Anneal down to 0.1
+  distill_schedule: "cosine"    # Smooth annealing
+  reg_weight: 0.001             # Spike regularization
+  reg_type: "l1"
+  # Mechanism alignment weights (applied AFTER warmup + rampup)
+  gamma_tau: 0.01               # τ-alignment (Δ ↔ β)
+  gamma_stp: 0.01               # STP-alignment (B ↔ STP gain)
+  gamma_dend: 0.01              # Dendrite-alignment (C ↔ gate)
+  # Staged training: train base SNN first, then add alignment
+  alignment_warmup_epochs: 30   # Epochs with gamma=0 (pure Poisson+KL)
+  alignment_rampup_epochs: 20   # Epochs to linearly ramp gammas 0→full
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 4
+  pin_memory: true

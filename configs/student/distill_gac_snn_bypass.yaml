@@ -1,0 +1,68 @@
+# =============================================================================
+# configs/student/distill_gac_snn_bypass.yaml
+# GAC-SNN ablation B: LR fix + warmup bypass.
+#
+# Combines the LR fix (0.001) with warmup_bypass: STP and dendritic gating
+# are disabled during the warmup phase (epochs 1-30) so the base SNN can
+# train spike prediction before the biophysical modules activate.
+#
+# Purpose: Test whether the extra STP/dendrite modules hurt base learning.
+# =============================================================================
+
+# --- Student SNN Architecture (same as base GAC-SNN) ---
+model:
+  type: "gac_snn"
+  hidden_size: 256
+  num_layers: 2
+  beta: 0.9
+  alpha: 0.85
+  threshold: 1.0
+  gradient_slope: 25.0
+  learn_alpha: true
+  learn_threshold: false
+  readout_mode: "exponential"
+  dropout: 0.2
+  enable_stp: true
+  enable_dendrite: true
+  num_dendritic_branches: 4
+
+# --- Training (LR raised to match standalone SNN) ---
+training:
+  epochs: 200
+  batch_size: 512
+  learning_rate: 0.001          # FIX: was 0.0005, now matches standalone SNN
+  weight_decay: 1.0e-5
+  optimizer: "adamw"
+  scheduler: "cosine"
+  warmup_steps: 500
+  patience: 40
+  grad_clip_norm: 1.0
+  seed: 42
+
+# --- Loss ---
+loss:
+  type: "poisson_nll"
+  log_input: false
+
+# --- Distillation (+ warmup bypass) ---
+distillation:
+  distill_weight: 0.5
+  distill_weight_min: 0.1
+  distill_schedule: "cosine"
+  reg_weight: 0.001
+  reg_type: "l1"
+  gamma_tau: 0.01
+  gamma_stp: 0.01
+  gamma_dend: 0.01
+  alignment_warmup_epochs: 30
+  alignment_rampup_epochs: 20
+  warmup_bypass: true           # NEW: disable STP+dendrite during warmup
+
+# --- Reproducibility ---
+seed: 42
+
+# --- Compute ---
+compute:
+  device: "auto"
+  num_workers: 4
+  pin_memory: true
