@@ -56,7 +56,7 @@ def fetch(key, dest):
     if dest.exists():
         return dest
     print(f"  fetching {key.split('/')[-1]}")
-    s3.download_file("braingeneersdev", key, str(dest))
+    s3.download_file("<lab-bucket>", key, str(dest))
     return dest
 
 

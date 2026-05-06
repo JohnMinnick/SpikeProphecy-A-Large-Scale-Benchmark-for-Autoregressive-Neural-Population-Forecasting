@@ -27,7 +27,7 @@ from src.data.multi_session_loader import (
 )
 
 
-B = "braingeneersdev"
+B = "<lab-bucket>"
 CHECKPOINT_SLUG = "2026-03-26_baseline-mamba-v12"
 CACHE_S3 = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
 OUTPUT_PREFIX = (

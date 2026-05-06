@@ -73,7 +73,7 @@ logger = logging.getLogger("nrp_teacher_pop_metrics")
 # ---------------------------------------------------------------------------
 # S3 Configuration
 # ---------------------------------------------------------------------------
-S3_BUCKET = "braingeneersdev"
+S3_BUCKET = "<lab-bucket>"
 S3_OUTPUT_PREFIX = "<anon>/spike-prophecy/outputs"
 
 

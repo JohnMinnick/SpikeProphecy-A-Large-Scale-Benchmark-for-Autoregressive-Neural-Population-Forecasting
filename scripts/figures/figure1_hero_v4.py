@@ -69,7 +69,7 @@ def _try_load_multiarch():
         local.parent.mkdir(parents=True, exist_ok=True)
         key = ("<anon>/spike-prophecy/outputs/"
                "multi-arch-inference-session4/predictions.npz")
-        s3.download_file("braingeneersdev", key, str(local))
+        s3.download_file("<lab-bucket>", key, str(local))
         return np.load(str(local))
     except Exception as e:
         print(f"  multi-arch NPZ not yet available ({e})")

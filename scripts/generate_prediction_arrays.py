@@ -52,7 +52,7 @@ logger = logging.getLogger("generate_prediction_arrays")
 # ---------------------------------------------------------------------------
 # S3 Configuration
 # ---------------------------------------------------------------------------
-S3_BUCKET = "braingeneersdev"
+S3_BUCKET = "<lab-bucket>"
 S3_OUTPUT_PREFIX = "<anon>/spike-prophecy/outputs"
 S3_CHECKPOINT_PREFIX = "<anon>/spike-prophecy/outputs"
 

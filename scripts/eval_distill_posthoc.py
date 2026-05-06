@@ -75,7 +75,7 @@ def load_metrics_from_s3(experiment_name: str, output_dir: Path) -> dict:
             config=s3_config,
         )
 
-        bucket = "braingeneersdev"
+        bucket = "<lab-bucket>"
         prefix = f"<anon>/spike-prophecy/outputs/{experiment_name}"
 
         # Download metrics.json, config.yaml, best_model.pt

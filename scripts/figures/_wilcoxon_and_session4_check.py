@@ -42,7 +42,7 @@ s3 = boto3.client(
 
 def fetch_per_session(slug):
     key = f"<anon>/spike-prophecy/outputs/{slug}/pop_metrics.json"
-    obj = s3.get_object(Bucket="braingeneersdev", Key=key)
+    obj = s3.get_object(Bucket="<lab-bucket>", Key=key)
     data = json.loads(obj["Body"].read())
     return data["per_session"]
 

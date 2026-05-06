@@ -11,7 +11,8 @@ electrophysiology recordings, plus a population metric decomposition
 alignment) and seven matched architecture baselines (Mamba, HGRN2,
 GatedDeltaNet, LRU, Transformer, LSTM, RSynaptic SNN).
 
-The paper PDF lives at `docs/paper/main.pdf`.
+The paper PDF is on OpenReview alongside this submission. This
+repository contains only the runnable code, configs, and tests.
 
 ## Repo layout
 
@@ -32,8 +33,6 @@ configs/              YAML configs for data, teachers, students
   student/            SNN student / distillation configs
 tests/                pytest suite (~64 files; leakage tests at
                       `tests/test_data/test_*.py`)
-docs/paper/           main.tex + main.pdf + figures + checklist +
-                      OpenReview submission folder
 Dockerfile.nrp        Docker image used for the National Research
                       Platform (Nautilus K8s) cluster training runs
 pyproject.toml        Package metadata; install editable

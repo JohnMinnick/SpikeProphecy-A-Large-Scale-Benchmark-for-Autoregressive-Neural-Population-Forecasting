@@ -45,7 +45,7 @@ def _bootstrap_models():
     ]
     for fname, key in files:
         try:
-            bs.download_file("braingeneersdev", key, str(target_dir / fname))
+            bs.download_file("<lab-bucket>", key, str(target_dir / fname))
             print(f"  bootstrapped {fname}")
         except Exception as e:
             print(f"  bootstrap {fname} failed: {e}")
@@ -53,7 +53,7 @@ def _bootstrap_models():
 
 _bootstrap_models()
 
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_OUT = "<anon>/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json"
 LOCAL = Path("/data/work")
 LOCAL.mkdir(parents=True, exist_ok=True)

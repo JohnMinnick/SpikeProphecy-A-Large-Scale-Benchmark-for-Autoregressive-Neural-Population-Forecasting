@@ -20,7 +20,7 @@ from pathlib import Path
 # =============================================================================
 # S3 configuration
 # =============================================================================
-S3_BUCKET = 'braingeneersdev'
+S3_BUCKET = '<lab-bucket>'
 S3_PREFIX = '<anon>/spike-prophecy/outputs/'
 S3_ENDPOINT = 'https://s3-west.nrp-nautilus.io'
 

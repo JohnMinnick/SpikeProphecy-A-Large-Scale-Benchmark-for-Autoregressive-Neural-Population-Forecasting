@@ -2,7 +2,7 @@
 
 After deploy_save_pred_combined105.ps1's NRP job uploads
 session_NNN.npz files to
-``s3://braingeneersdev/<anon>/spike-prophecy/outputs/save-pred-combined105-mamba/predictions/``,
+``s3://<lab-bucket>/<anon>/spike-prophecy/outputs/save-pred-combined105-mamba/predictions/``,
 this script pulls them locally to
 ``outputs/eval_local/behavioral_predictions/mamba_combined105/`` so
 the eval scripts can read them.
@@ -36,7 +36,7 @@ def main() -> None:
         aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
         aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
     )
-    bucket = "braingeneersdev"
+    bucket = "<lab-bucket>"
     out_dir = Path(args.local_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 

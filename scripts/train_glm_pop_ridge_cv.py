@@ -20,7 +20,7 @@ import boto3
 import numpy as np
 from sklearn.linear_model import Ridge
 
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_CACHE_PREFIX = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
 S3_OUTPUT_KEY = "<anon>/spike-prophecy/outputs/glm-pop-ridge-cv/metrics.json"
 LOCAL_CACHE = Path("/data/steinmetz_cache")

@@ -5,8 +5,8 @@ Usage:
   python scripts/figures/_update_data_from_nrp.py
 
 Reads:
-  s3://braingeneersdev/<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
-  s3://braingeneersdev/<anon>/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json
+  s3://<lab-bucket>/<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz
+  s3://<lab-bucket>/<anon>/spike-prophecy/outputs/ar-rollout-7arch/ar_rollout.json
 
 Writes (printed to stdout for manual paste-in):
   - FANO_DATA dict with all 7 archs
@@ -36,7 +36,7 @@ s3 = boto3.client(
 
 
 def fetch(key, dest):
-    s3.download_file("braingeneersdev", key, str(dest))
+    s3.download_file("<lab-bucket>", key, str(dest))
     return dest
 
 

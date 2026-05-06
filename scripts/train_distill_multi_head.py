@@ -1039,7 +1039,7 @@ def main() -> None:
             "Downloading student checkpoint from S3: %s", s3_key,
         )
         s3_client.download_file(
-            "braingeneersdev", s3_key, student_ckpt_path,
+            "<lab-bucket>", s3_key, student_ckpt_path,
         )
 
     if student_ckpt_path:

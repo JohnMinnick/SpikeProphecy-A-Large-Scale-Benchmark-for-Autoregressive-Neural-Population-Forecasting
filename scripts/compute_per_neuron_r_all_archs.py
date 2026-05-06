@@ -47,7 +47,7 @@ def _bootstrap_models():
     ]
     for fname, key in files:
         try:
-            bs.download_file("braingeneersdev", key, str(target_dir / fname))
+            bs.download_file("<lab-bucket>", key, str(target_dir / fname))
             print(f"  bootstrapped {fname}")
         except Exception as e:
             print(f"  bootstrap {fname} failed: {e}")
@@ -75,7 +75,7 @@ def _check_cuda():
 _check_cuda()
 
 
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_OUT = "<anon>/spike-prophecy/outputs/per-neuron-fano-7arch/per_neuron_data.npz"
 LOCAL = Path("/data/work")
 LOCAL.mkdir(parents=True, exist_ok=True)

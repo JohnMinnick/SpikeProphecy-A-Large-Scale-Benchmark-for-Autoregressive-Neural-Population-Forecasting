@@ -5,10 +5,9 @@ the benchmark without spinning up the full pipeline.
 
 ## What's where
 
-* **Paper (compiled PDF):** `docs/paper/main.pdf`
-* **Paper source:** `docs/paper/main.tex`
-* **NeurIPS checklist:** `docs/paper/checklist.tex`
-* **Datasheet (Appendix B excerpt of `main.pdf`):** `docs/paper/main.tex` line ~1719 onward
+* **Paper:** on OpenReview alongside this submission. This repository
+  contains only the runnable code; the paper PDF, datasheet, and
+  NeurIPS checklist all live with the OpenReview submission.
 
 ## Three quick spot-checks
 

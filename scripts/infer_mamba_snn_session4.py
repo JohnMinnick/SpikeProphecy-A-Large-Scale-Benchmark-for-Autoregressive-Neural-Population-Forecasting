@@ -7,7 +7,7 @@ Uses the verified-correct pipeline from the local run:
   - Trim outputs to actual n_neurons + first 660 timesteps for the figure
 
 Output:
-  s3://braingeneersdev/<anon>/spike-prophecy/outputs/multi-arch-mamba-snn-session4/predictions.npz
+  s3://<lab-bucket>/<anon>/spike-prophecy/outputs/multi-arch-mamba-snn-session4/predictions.npz
 """
 
 import os
@@ -23,7 +23,7 @@ import yaml
 
 sys.path.insert(0, "/workspace")
 
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_OUT = ("<anon>/spike-prophecy/outputs/"
           "multi-arch-mamba-snn-session4/predictions.npz")
 LOCAL = Path("/data/work")

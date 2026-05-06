@@ -15,7 +15,7 @@ import boto3
 import numpy as np
 import torch
 
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_OUT = "<anon>/spike-prophecy/outputs/multi-arch-inference-session4/predictions.npz"
 LOCAL_CACHE = Path("/data/steinmetz_cache")
 SESSION_IDX = 4

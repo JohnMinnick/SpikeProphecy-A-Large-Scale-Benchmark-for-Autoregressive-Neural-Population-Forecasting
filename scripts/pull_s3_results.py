@@ -1,7 +1,7 @@
 """
 Pull experiment results from S3 for local analysis.
 
-Downloads metrics.json (and optionally plots) from the braingeneers S3
+Downloads metrics.json (and optionally plots) from the lab S3
 bucket into outputs/s3_metrics/ for paper figure generation and analysis.
 
 Usage:
@@ -30,7 +30,7 @@ from botocore.config import Config
 # Configuration
 # ---------------------------------------------------------------------------
 S3_ENDPOINT = "https://s3-west.nrp-nautilus.io"
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_PREFIX = "<anon>/spike-prophecy/outputs"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "s3_metrics"
@@ -43,7 +43,7 @@ def create_s3_client():
     Reads credentials from environment variables.
 
     Returns:
-        boto3 S3 client configured for the braingeneers bucket.
+        boto3 S3 client configured for the lab bucket.
     """
     s3_config = Config(
         retries={"max_attempts": 3, "mode": "standard"},

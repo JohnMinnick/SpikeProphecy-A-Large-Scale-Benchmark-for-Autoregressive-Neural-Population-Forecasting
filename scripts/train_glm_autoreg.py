@@ -32,7 +32,7 @@ from sklearn.linear_model import PoissonRegressor
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-BUCKET = "braingeneersdev"
+BUCKET = "<lab-bucket>"
 S3_CACHE_PREFIX = "<anon>/spike-prophecy/inputs/steinmetz-session-cache"
 S3_OUTPUT_KEY = "<anon>/spike-prophecy/outputs/glm-autoreg-baseline/metrics.json"
 LOCAL_CACHE = Path("/data/steinmetz_cache")

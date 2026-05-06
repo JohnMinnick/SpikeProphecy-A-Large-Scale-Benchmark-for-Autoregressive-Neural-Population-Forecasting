@@ -29,14 +29,14 @@ def download_s3_cache(s3_prefix, local_dir):
     """Download all files from an S3 prefix to a local directory."""
     local_dir = Path(local_dir)
     local_dir.mkdir(parents=True, exist_ok=True)
-    resp = s3.list_objects_v2(Bucket="braingeneersdev", Prefix=s3_prefix, MaxKeys=500)
+    resp = s3.list_objects_v2(Bucket="<lab-bucket>", Prefix=s3_prefix, MaxKeys=500)
     for obj in resp.get("Contents", []):
         key = obj["Key"]
         fname = key.split("/")[-1]
         local_path = local_dir / fname
         if not local_path.exists():
             print(f"  Downloading {fname} ({obj['Size']:,} bytes)...")
-            s3.download_file("braingeneersdev", key, str(local_path))
+            s3.download_file("<lab-bucket>", key, str(local_path))
     print(f"  Cache ready: {local_dir} ({len(list(local_dir.iterdir()))} files)")
     return local_dir
 
@@ -115,7 +115,7 @@ for run in RUNS:
     ckpt_path = f"/tmp/{run['s3_ckpt']}_best.pt"
     if not os.path.exists(ckpt_path):
         print(f"  Downloading checkpoint from {run['s3_ckpt']}...")
-        s3.download_file("braingeneersdev",
+        s3.download_file("<lab-bucket>",
             f"<anon>/spike-prophecy/outputs/{run['s3_ckpt']}/best_model.pt",
             ckpt_path)
 
@@ -187,7 +187,7 @@ for r in results:
 
 # Upload results to S3
 out = json.dumps(results, indent=2)
-s3.put_object(Bucket="braingeneersdev",
+s3.put_object(Bucket="<lab-bucket>",
     Key="<anon>/spike-prophecy/outputs/eval-distill-r-methods/results.json",
     Body=out.encode())
 print(f"\nUploaded results to S3: eval-distill-r-methods/results.json")

@@ -1,7 +1,7 @@
 """
 GatedDeltaNet-inspired Teacher ANN baseline — NON-diagonal SSM control.
 
-Added 2026-04-22 per J. Eshraghian follow-up feedback: "Hgrn2 and mamba
+Added 2026-04-22 per coauthor follow-up feedback: "Hgrn2 and mamba
 are both p similar! If its possible to test Gated deltanet, thatd be a
 useful result."
 

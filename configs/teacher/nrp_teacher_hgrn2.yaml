@@ -2,7 +2,7 @@
 # configs/teacher/nrp_teacher_hgrn2.yaml
 # HGRN2 baseline — diagonal linear-RNN state space model.
 #
-# Added 2026-04-21 per advisor + J. Eshraghian feedback: provides a second
+# Added 2026-04-21 per coauthor feedback: provides a second
 # diagonal SSM data point to test the hypothesis that diagonal recurrent
 # structure (independent hidden states, activation-level coupling) is a
 # natural inductive prior for neural population data.

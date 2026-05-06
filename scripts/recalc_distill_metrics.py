@@ -84,7 +84,7 @@ DATASET_STATS = {
 
 def download_metrics(s3, experiment_slug: str, output_dir: Path) -> dict:
     """Download metrics.json from S3 and return as dict."""
-    bucket = "braingeneersdev"
+    bucket = "<lab-bucket>"
     key = f"<anon>/spike-prophecy/outputs/{experiment_slug}/metrics.json"
     local_path = output_dir / experiment_slug / "metrics.json"
     local_path.parent.mkdir(parents=True, exist_ok=True)

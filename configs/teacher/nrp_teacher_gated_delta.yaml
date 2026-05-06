@@ -2,7 +2,7 @@
 # configs/teacher/nrp_teacher_gated_delta.yaml
 # GatedDeltaNet baseline — non-diagonal SSM control.
 #
-# Added 2026-04-22 per J. Eshraghian follow-up: tests whether the
+# Added 2026-04-22 per coauthor follow-up: tests whether the
 # diagonal-SSM inductive-prior hypothesis survives a strong modern
 # non-diagonal SSM control. If GatedDeltaNet underperforms Mamba/HGRN2,
 # the hypothesis gets real evidence; if it matches, the hypothesis

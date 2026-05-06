@@ -1,11 +1,11 @@
 """
-Upload IBL cached session arrays to braingeneersdev S3.
+Upload IBL cached session arrays to <lab-bucket> S3.
 
 Uploads the preprocessed .npy files and metadata.json from the local
 IBL cache to S3, organized alongside the Steinmetz inputs:
 
-    s3://braingeneersdev/<anon>/spike-prophecy/inputs/steinmetz/  (existing NWBs)
-    s3://braingeneersdev/<anon>/spike-prophecy/inputs/ibl-repeated-site/
+    s3://<lab-bucket>/<anon>/spike-prophecy/inputs/steinmetz/  (existing NWBs)
+    s3://<lab-bucket>/<anon>/spike-prophecy/inputs/ibl-repeated-site/
         session_000.npy
         session_001.npy
         ...
@@ -42,7 +42,7 @@ S3_PREFIX = "<anon>/spike-prophecy/inputs/ibl-repeated-site"
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
-        description="Upload IBL cached arrays to braingeneersdev S3.",
+        description="Upload IBL cached arrays to <lab-bucket> S3.",
     )
     parser.add_argument(
         "--cache-dir",
@@ -89,7 +89,7 @@ def create_s3_client():
         aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
         config=s3_config,
     )
-    return s3.Bucket("braingeneersdev")
+    return s3.Bucket("<lab-bucket>")
 
 
 def main() -> None:
@@ -129,7 +129,7 @@ def main() -> None:
     print(f"\n{'='*60}")
     print(f"Uploading {len(files_to_upload)} files to S3")
     print(f"  Local dir:  {cache_dir}")
-    print(f"  S3 prefix:  s3://braingeneersdev/{args.s3_prefix}/")
+    print(f"  S3 prefix:  s3://<lab-bucket>/{args.s3_prefix}/")
     print(f"  Total size: {total_gb:.2f} GB")
     print(f"  Dry run:    {args.dry_run}")
     print(f"{'='*60}\n")
@@ -162,7 +162,7 @@ def main() -> None:
 
     print(f"\n{'='*60}")
     print(f"Upload complete: {uploaded} succeeded, {failed} failed")
-    print(f"S3 location: s3://braingeneersdev/{args.s3_prefix}/")
+    print(f"S3 location: s3://<lab-bucket>/{args.s3_prefix}/")
     print(f"{'='*60}")
 
     if failed > 0:
